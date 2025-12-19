@@ -1,17 +1,17 @@
 <?php
 
 /**
- * RaPay Blocks Support
+ * BEIPay Blocks Support
  *
- * @package RaPay
+ * @package BEIPay
  */
 
 use Automattic\WooCommerce\Blocks\Payments\Integrations\AbstractPaymentMethodType;
 
 /**
- * RaPay Blocks integration class.
+ * BEIPay Blocks integration class.
  */
-final class RaPay_Blocks_Support extends AbstractPaymentMethodType
+final class BEIPay_Blocks_Support extends AbstractPaymentMethodType
 {
     /**
      * Payment method name/id
@@ -37,7 +37,7 @@ final class RaPay_Blocks_Support extends AbstractPaymentMethodType
         if ($gateway) {
             $this->gateway = $gateway;
             $this->name = $gateway->id;
-            $this->script_handle = 'rapay-' . $this->name . '-blocks';
+            $this->script_handle = 'beipay-bank-e-money-indonesia-' . $this->name . '-blocks';
         }
     }
 
@@ -74,9 +74,9 @@ final class RaPay_Blocks_Support extends AbstractPaymentMethodType
 
         $script_asset = require $script_asset_path;
 
-        if (!wp_script_is('rapay-blocks-integration', 'registered')) {
+        if (!wp_script_is('beipay-bank-e-money-indonesia-blocks-integration', 'registered')) {
             wp_register_script(
-                'rapay-blocks-integration',
+                'beipay-bank-e-money-indonesia-blocks-integration',
                 $script_url,
                 $script_asset['dependencies'],
                 $script_asset['version'],
@@ -84,7 +84,7 @@ final class RaPay_Blocks_Support extends AbstractPaymentMethodType
             );
         }
 
-        return ['rapay-blocks-integration'];
+        return ['beipay-bank-e-money-indonesia-blocks-integration'];
     }
 
     /**

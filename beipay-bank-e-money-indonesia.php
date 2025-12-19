@@ -1,8 +1,8 @@
 <?php
 
 /**
- * Plugin Name:       RaPay - Bank dan e-Money Indonesia
- * Plugin URI:        https://wordpress.org/plugins/rapay-bank-dan-e-money-indonesia-for-woocommerce
+ * Plugin Name:       BEIPay - Bank dan e-Money Indonesia
+ * Plugin URI:        https://wordpress.org/plugins/beipay-bank-dan-e-money-indonesia-for-woocommerce
  * Description:       Plugin Pembayaran Bank dan e-Money Indonesia untuk WooCommerce. Mendukung kode unik pembayaran.
  * Version:           4.0.0
  * Author:            Reynaldi Arya
@@ -13,7 +13,7 @@
  * WC tested up to:   10.4
  * License:           GNU General Public License v3.0
  * License URI:       http://www.gnu.org/licenses/gpl-3.0.html
- * Text Domain:       rapay
+ * Text Domain:       beipay-bank-e-money-indonesia
  */
 
 if (! defined('ABSPATH')) {
@@ -21,12 +21,12 @@ if (! defined('ABSPATH')) {
 }
 
 /**
- * Daftar Gateway RaPay (Single Source of Truth)
+ * Daftar Gateway BEIPay (Single Source of Truth)
  *
  * Format: 'class-file-name' => 'Class_Name'
  * Contoh: 'bni' => 'WC_Gateway_BNI'
  */
-define('RAPAY_GATEWAYS', [
+define('BEIPay_GATEWAYS', [
     // Bank
     'bank' => [
         'bni'          => 'WC_Gateway_BNI',
@@ -66,10 +66,10 @@ define('RAPAY_GATEWAYS', [
 /**
  * Helper: Mendapatkan semua class name gateway
  */
-function rapay_get_gateway_classes(): array
+function beipay_get_gateway_classes(): array
 {
     $classes = [];
-    foreach (RAPAY_GATEWAYS as $type => $gateways) {
+    foreach (BEIPay_GATEWAYS as $type => $gateways) {
         $classes = array_merge($classes, array_values($gateways));
     }
     return $classes;
@@ -93,19 +93,19 @@ add_action('woocommerce_blocks_loaded', function () {
         return;
     }
 
-    require_once dirname(__FILE__) . '/blocks/class-rapay-blocks-support.php';
+    require_once dirname(__FILE__) . '/blocks/class-beipay-bank-e-money-indonesia-blocks-support.php';
 
     add_action(
         'woocommerce_blocks_payment_method_type_registration',
         function (\Automattic\WooCommerce\Blocks\Payments\PaymentMethodRegistry $payment_method_registry) {
             $gateways = WC()->payment_gateways()->payment_gateways();
-            $our_gateways = rapay_get_gateway_classes();
+            $our_gateways = beipay_get_gateway_classes();
 
             foreach ($gateways as $gateway) {
                 if ($gateway instanceof WC_Payment_Gateway && strpos(get_class($gateway), 'WC_Gateway_') === 0) {
                     $gateway_class = get_class($gateway);
                     if (in_array($gateway_class, $our_gateways, true)) {
-                        $payment_method_registry->register(new RaPay_Blocks_Support($gateway));
+                        $payment_method_registry->register(new BEIPay_Blocks_Support($gateway));
                     }
                 }
             }
@@ -123,9 +123,9 @@ add_action('plugins_loaded', function () {
             ?>
             <div class="notice notice-error is-dismissible">
                 <p>
-                    <strong>RaPay Error:</strong> WooCommerce tidak ditemukan! 
+                    <strong>BEIPay Error:</strong> WooCommerce tidak ditemukan! 
                     Plugin ini membutuhkan WooCommerce. 
-                    <br><em>Plugin RaPay telah dinonaktifkan secara otomatis.</em>
+                    <br><em>Plugin BEIPay telah dinonaktifkan secara otomatis.</em>
                 </p>
             </div>
             <?php
@@ -136,6 +136,7 @@ add_action('plugins_loaded', function () {
         deactivate_plugins(plugin_basename(__FILE__));
 
         // 3. Hilangkan pesan "Plugin Activated" jika user baru saja klik Activate
+        // phpcs:ignore WordPress.Security.NonceVerification.Recommended
         if (isset($_GET['activate'])) {
             unset($_GET['activate']);
         }
@@ -148,8 +149,8 @@ add_action('plugins_loaded', function () {
         return;
     }
 
-    // Load Class Files berdasarkan RAPAY_GATEWAYS
-    foreach (RAPAY_GATEWAYS as $type => $gateways) {
+    // Load Class Files berdasarkan BEIPay_GATEWAYS
+    foreach (BEIPay_GATEWAYS as $type => $gateways) {
         foreach ($gateways as $file_slug => $class_name) {
             $file = dirname(__FILE__) . '/' . $type . '/class-wc-gateway-' . $file_slug . '.php';
             if (file_exists($file)) {
@@ -163,7 +164,7 @@ add_action('plugins_loaded', function () {
  * 4. Daftarkan Gateway ke WooCommerce
  */
 add_filter('woocommerce_payment_gateways', function ($methods) {
-    foreach (rapay_get_gateway_classes() as $gateway) {
+    foreach (beipay_get_gateway_classes() as $gateway) {
         if (class_exists($gateway)) {
             $methods[] = $gateway;
         }
@@ -186,7 +187,7 @@ add_filter('plugin_row_meta', function ($links, $plugin_file) {
  * 6. Pengaturan Tab "Advanced" untuk Kode Unik
  */
 add_filter('woocommerce_get_sections_advanced', function ($sections) {
-    $sections['puc'] = __('Kode Pembayaran', 'rapay');
+    $sections['puc'] = __('Kode Pembayaran', 'beipay-bank-e-money-indonesia');
     return $sections;
 });
 
@@ -195,42 +196,42 @@ add_filter('woocommerce_get_settings_advanced', function ($settings, $current_se
         $settings_puc = array();
 
         $settings_puc[] = array(
-            'name' => __('Pengaturan Kode Unik', 'rapay'),
+            'name' => __('Pengaturan Kode Unik', 'beipay-bank-e-money-indonesia'),
             'type' => 'title',
-            'desc' => __('Tambahkan 3 digit angka unik pada total pembayaran untuk mempermudah verifikasi transfer manual.', 'rapay'),
+            'desc' => __('Tambahkan 3 digit angka unik pada total pembayaran untuk mempermudah verifikasi transfer manual.', 'beipay-bank-e-money-indonesia'),
             'id'   => 'puc_options',
         );
 
         $settings_puc[] = array(
-            'name'    => __('Aktifkan Kode Unik', 'rapay'),
+            'name'    => __('Aktifkan Kode Unik', 'beipay-bank-e-money-indonesia'),
             'type'    => 'checkbox',
-            'desc'    => __('Ya, aktifkan penambahan kode unik otomatis.', 'rapay'),
+            'desc'    => __('Ya, aktifkan penambahan kode unik otomatis.', 'beipay-bank-e-money-indonesia'),
             'id'      => 'woocommerce_puc_enabled',
             'default' => 'no',
         );
 
         $settings_puc[] = array(
-            'name'        => __('Label Kode Unik', 'rapay'),
+            'name'        => __('Label Kode Unik', 'beipay-bank-e-money-indonesia'),
             'type'        => 'text',
-            'desc'        => __('Teks yang muncul di halaman checkout.', 'rapay'),
+            'desc'        => __('Teks yang muncul di halaman checkout.', 'beipay-bank-e-money-indonesia'),
             'id'          => 'woocommerce_puc_title',
             'default'     => 'Kode Pembayaran',
             'placeholder' => 'Kode Pembayaran',
         );
 
         $settings_puc[] = array(
-            'name'              => __('Angka Minimal', 'rapay'),
+            'name'              => __('Angka Minimal', 'beipay-bank-e-money-indonesia'),
             'type'              => 'number',
-            'desc'              => __('Batas bawah angka acak (Misal: 1).', 'rapay'),
+            'desc'              => __('Batas bawah angka acak (Misal: 1).', 'beipay-bank-e-money-indonesia'),
             'id'                => 'woocommerce_puc_min',
             'default'           => '1',
             'custom_attributes' => array('min' => 1)
         );
 
         $settings_puc[] = array(
-            'name'    => __('Angka Maksimal', 'rapay'),
+            'name'    => __('Angka Maksimal', 'beipay-bank-e-money-indonesia'),
             'type'    => 'number',
-            'desc'    => __('Batas atas angka acak (Misal: 999).', 'rapay'),
+            'desc'    => __('Batas atas angka acak (Misal: 999).', 'beipay-bank-e-money-indonesia'),
             'id'      => 'woocommerce_puc_max',
             'default' => '999',
             'custom_attributes' => array('max' => 999)
@@ -262,7 +263,7 @@ add_action('woocommerce_cart_calculate_fees', function ($cart) {
     $max   = (int) get_option('woocommerce_puc_max', 999);
     $title = get_option('woocommerce_puc_title', 'Kode Pembayaran');
 
-    $unique_code = WC()->session->get('rapay_unique_code');
+    $unique_code = WC()->session->get('beipay_unique_code');
 
     if (! $unique_code) {
         try {
@@ -270,7 +271,7 @@ add_action('woocommerce_cart_calculate_fees', function ($cart) {
         } catch (Exception $e) {
             $unique_code = wp_rand($min, $max); // Fallback
         }
-        WC()->session->set('rapay_unique_code', $unique_code);
+        WC()->session->set('beipay_unique_code', $unique_code);
     }
 
     if ($unique_code > 0) {
@@ -283,6 +284,6 @@ add_action('woocommerce_cart_calculate_fees', function ($cart) {
  */
 add_action('woocommerce_thankyou', function () {
     if (WC()->session) {
-        WC()->session->__unset('rapay_unique_code');
+        WC()->session->__unset('beipay_unique_code');
     }
 });

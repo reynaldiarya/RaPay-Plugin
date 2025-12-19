@@ -62,8 +62,8 @@ class WC_Gateway_QRIS extends WC_Payment_Gateway
         $icon_url = $show_icon ? plugins_url('assets/logo-qris.png', __FILE__) : '';
         $this->icon               = apply_filters('woocommerce_qris_icon', $icon_url);
         $this->has_fields         = false;
-        $this->method_title       = __('QRIS', 'rapay');
-        $this->method_description = __('Lakukan pembayaran melalui transfer langsung ke rekening QRIS.', 'rapay');
+        $this->method_title       = __('QRIS', 'beipay-bank-e-money-indonesia');
+        $this->method_description = __('Lakukan pembayaran melalui transfer langsung ke rekening QRIS.', 'beipay-bank-e-money-indonesia');
 
         // Load the settings.
         $this->init_form_fields();
@@ -90,44 +90,44 @@ class WC_Gateway_QRIS extends WC_Payment_Gateway
     {
         $this->form_fields = array(
             'enabled'         => array(
-                'title'   => __('Enable/Disable', 'rapay'),
+                'title'   => __('Enable/Disable', 'beipay-bank-e-money-indonesia'),
                 'type'    => 'checkbox',
-                'label'   => __('Enable QRIS', 'rapay'),
+                'label'   => __('Enable QRIS', 'beipay-bank-e-money-indonesia'),
                 'default' => 'no',
             ),
             'title'           => array(
-                'title'       => __('Title', 'rapay'),
+                'title'       => __('Title', 'beipay-bank-e-money-indonesia'),
                 'type'        => 'safe_text',
-                'description' => __('Mengatur judul yang dilihat pengguna selama proses checkout.', 'rapay'),
-                'default'     => __('Transfer QRIS', 'rapay'),
+                'description' => __('Mengatur judul yang dilihat pengguna selama proses checkout.', 'beipay-bank-e-money-indonesia'),
+                'default'     => __('Transfer QRIS', 'beipay-bank-e-money-indonesia'),
                 'desc_tip'    => true,
             ),
             'enable_icon' => array(
-                'title'         => __('Icon', 'rapay'),
-                'label'         => __('Enable Icon', 'rapay'),
+                'title'         => __('Icon', 'beipay-bank-e-money-indonesia'),
+                'label'         => __('Enable Icon', 'beipay-bank-e-money-indonesia'),
                 'type'          => 'checkbox',
                 'description'   => '<img src="' . plugins_url('assets/logo-qris.png', __FILE__) . '" style="height:100%;max-height:32px !important" />',
                 'default'       => 'yes',
             ),
             'description'     => array(
-                'title'       => __('Description', 'rapay'),
+                'title'       => __('Description', 'beipay-bank-e-money-indonesia'),
                 'type'        => 'textarea',
-                'description' => __('Deskripsi metode pembayaran yang akan dilihat pelanggan pada halaman checkout Anda.', 'rapay'),
-                'default'     => __('Lakukan pembayaran langsung ke rekening QRIS kami. Mohon gunakan ID Pesanan Anda sebagai referensi pembayaran. Pesanan Anda tidak akan dikirimkan hingga dana telah masuk ke rekening kami.', 'rapay'),
+                'description' => __('Deskripsi metode pembayaran yang akan dilihat pelanggan pada halaman checkout Anda.', 'beipay-bank-e-money-indonesia'),
+                'default'     => __('Lakukan pembayaran langsung ke rekening QRIS kami. Mohon gunakan ID Pesanan Anda sebagai referensi pembayaran. Pesanan Anda tidak akan dikirimkan hingga dana telah masuk ke rekening kami.', 'beipay-bank-e-money-indonesia'),
                 'desc_tip'    => true,
             ),
             'instructions'    => array(
-                'title'       => __('Instructions', 'rapay'),
+                'title'       => __('Instructions', 'beipay-bank-e-money-indonesia'),
                 'type'        => 'textarea',
-                'description' => __('Petunjuk yang akan ditambahkan ke halaman ucapan terima kasih dan email.', 'rapay'),
+                'description' => __('Petunjuk yang akan ditambahkan ke halaman ucapan terima kasih dan email.', 'beipay-bank-e-money-indonesia'),
                 'default'     => '',
                 'desc_tip'    => true,
             ),
             'qr_code' => array(
-                'title'       => __('Link QRIS', 'rapay'),
+                'title'       => __('Link QRIS', 'beipay-bank-e-money-indonesia'),
                 'type'        => 'text',
-                'description' => __('Masukkan Link QRIS.', 'rapay'),
-                'default'     => __('', 'rapay'),
+                'description' => __('Masukkan Link QRIS.', 'beipay-bank-e-money-indonesia'),
+                'default'     => __('', 'beipay-bank-e-money-indonesia'),
                 'desc_tip'    => true,
             ),
         );
@@ -213,7 +213,7 @@ class WC_Gateway_QRIS extends WC_Payment_Gateway
              */
             $process_payment_status = apply_filters('woocommerce_qris_process_payment_order_status', OrderStatus::ON_HOLD, $order);
             // Mark as on-hold (we're awaiting the payment).
-            $order->update_status($process_payment_status, __('Menunggu pembayaran dari QRIS.', 'rapay'));
+            $order->update_status($process_payment_status, __('Menunggu pembayaran dari QRIS.', 'beipay-bank-e-money-indonesia'));
         } else {
             $order->payment_complete();
         }

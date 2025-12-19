@@ -6,8 +6,8 @@
   const { getSetting } = window.wc.wcSettings;
   const { createElement } = window.wp.element;
 
-  // All RaPay gateway IDs
-  const rapayGateways = [
+  // All BEIPay gateway IDs
+  const beipayGateways = [
     "bank_bni",
     "bank_bca",
     "bank_bri",
@@ -41,7 +41,7 @@
   /**
    * Create and register a payment method for a gateway
    */
-  const registerRaPayGateway = (gatewayId) => {
+  const registerBEIPayGateway = (gatewayId) => {
     const settings = getSetting(gatewayId + "_data", null);
 
     if (!settings) {
@@ -91,12 +91,12 @@
     });
   };
 
-  // Register all RaPay payment methods
-  rapayGateways.forEach((gatewayId) => {
+  // Register all BEIPay payment methods
+  beipayGateways.forEach((gatewayId) => {
     try {
-      registerRaPayGateway(gatewayId);
+      registerBEIPayGateway(gatewayId);
     } catch (e) {
-      console.log("RaPay: Could not register " + gatewayId, e);
+      console.log("BEIPay: Could not register " + gatewayId, e);
     }
   });
 })();

@@ -62,8 +62,8 @@ class WC_Gateway_BRI extends WC_Payment_Gateway
         $icon_url = $show_icon ? plugins_url('assets/logo-bri.png', __FILE__) : '';
         $this->icon               = apply_filters('woocommerce_bank_bri_icon', $icon_url);
         $this->has_fields         = false;
-        $this->method_title       = __('Bank BRI', 'rapay');
-        $this->method_description = __('Lakukan pembayaran melalui transfer langsung ke rekening Bank BRI.', 'rapay');
+        $this->method_title       = __('Bank BRI', 'beipay-bank-e-money-indonesia');
+        $this->method_description = __('Lakukan pembayaran melalui transfer langsung ke rekening Bank BRI.', 'beipay-bank-e-money-indonesia');
 
         // Load the settings.
         $this->init_form_fields();
@@ -104,36 +104,36 @@ class WC_Gateway_BRI extends WC_Payment_Gateway
     {
         $this->form_fields = array(
             'enabled'         => array(
-                'title'   => __('Enable/Disable', 'rapay'),
+                'title'   => __('Enable/Disable', 'beipay-bank-e-money-indonesia'),
                 'type'    => 'checkbox',
-                'label'   => __('Enable Bank BRI', 'rapay'),
+                'label'   => __('Enable Bank BRI', 'beipay-bank-e-money-indonesia'),
                 'default' => 'no',
             ),
             'title'           => array(
-                'title'       => __('Title', 'rapay'),
+                'title'       => __('Title', 'beipay-bank-e-money-indonesia'),
                 'type'        => 'safe_text',
-                'description' => __('Mengatur judul yang dilihat pengguna selama proses checkout.', 'rapay'),
-                'default'     => __('Transfer Bank BRI', 'rapay'),
+                'description' => __('Mengatur judul yang dilihat pengguna selama proses checkout.', 'beipay-bank-e-money-indonesia'),
+                'default'     => __('Transfer Bank BRI', 'beipay-bank-e-money-indonesia'),
                 'desc_tip'    => true,
             ),
             'enable_icon' => array(
-                'title'         => __('Icon', 'rapay'),
-                'label'         => __('Enable Icon', 'rapay'),
+                'title'         => __('Icon', 'beipay-bank-e-money-indonesia'),
+                'label'         => __('Enable Icon', 'beipay-bank-e-money-indonesia'),
                 'type'          => 'checkbox',
                 'description'   => '<img src="' . plugins_url('assets/logo-bri.png', __FILE__) . '" style="height:100%;max-height:32px !important" />',
                 'default'       => 'no',
             ),
             'description'     => array(
-                'title'       => __('Description', 'rapay'),
+                'title'       => __('Description', 'beipay-bank-e-money-indonesia'),
                 'type'        => 'textarea',
-                'description' => __('Deskripsi metode pembayaran yang akan dilihat pelanggan pada halaman checkout Anda.', 'rapay'),
-                'default'     => __('Lakukan pembayaran langsung ke rekening Bank BRI kami. Mohon gunakan ID Pesanan Anda sebagai referensi pembayaran. Pesanan Anda tidak akan dikirimkan hingga dana telah masuk ke rekening kami.', 'rapay'),
+                'description' => __('Deskripsi metode pembayaran yang akan dilihat pelanggan pada halaman checkout Anda.', 'beipay-bank-e-money-indonesia'),
+                'default'     => __('Lakukan pembayaran langsung ke rekening Bank BRI kami. Mohon gunakan ID Pesanan Anda sebagai referensi pembayaran. Pesanan Anda tidak akan dikirimkan hingga dana telah masuk ke rekening kami.', 'beipay-bank-e-money-indonesia'),
                 'desc_tip'    => true,
             ),
             'instructions'    => array(
-                'title'       => __('Instructions', 'rapay'),
+                'title'       => __('Instructions', 'beipay-bank-e-money-indonesia'),
                 'type'        => 'textarea',
-                'description' => __('Petunjuk yang akan ditambahkan ke halaman ucapan terima kasih dan email.', 'rapay'),
+                'description' => __('Petunjuk yang akan ditambahkan ke halaman ucapan terima kasih dan email.', 'beipay-bank-e-money-indonesia'),
                 'default'     => '',
                 'desc_tip'    => true,
             ),
@@ -156,14 +156,14 @@ class WC_Gateway_BRI extends WC_Payment_Gateway
         $locale  = $this->get_country_locale();
 
         // Get sortcode label in the $locale array and use appropriate one.
-        $sortcode = isset($locale[$country]['sortcode']['label']) ? $locale[$country]['sortcode']['label'] : __('Kode Cabang', 'rapay');
+        $sortcode = isset($locale[$country]['sortcode']['label']) ? $locale[$country]['sortcode']['label'] : __('Kode Cabang', 'beipay-bank-e-money-indonesia');
 
         ?>
         <tr valign="top">
             <th scope="row" class="titledesc">
                 <label>
-                    <?php esc_html_e('Account details:', 'rapay'); ?>
-                    <?php echo wp_kses_post(wc_help_tip(__('Rincian akun ini akan ditampilkan di halaman terima kasih pesanan dan email konfirmasi.', 'rapay'))); ?>
+                    <?php esc_html_e('Account details:', 'beipay-bank-e-money-indonesia'); ?>
+                    <?php echo wp_kses_post(wc_help_tip(__('Rincian akun ini akan ditampilkan di halaman terima kasih pesanan dan email konfirmasi.', 'beipay-bank-e-money-indonesia'))); ?>
                 </label>
             </th>
             <td class="forminp" id="bank_bri_accounts">
@@ -172,11 +172,11 @@ class WC_Gateway_BRI extends WC_Payment_Gateway
                         <thead>
                             <tr>
                                 <th class="sort">&nbsp;</th>
-                                <th><?php esc_html_e('Nama akun', 'rapay'); ?></th>
-                                <th><?php esc_html_e('Nomor rekening', 'rapay'); ?></th>
+                                <th><?php esc_html_e('Nama akun', 'beipay-bank-e-money-indonesia'); ?></th>
+                                <th><?php esc_html_e('Nomor rekening', 'beipay-bank-e-money-indonesia'); ?></th>
                                 <th><?php echo esc_html($sortcode); ?></th>
-                                <th><?php esc_html_e('IBAN', 'rapay'); ?></th>
-                                <th><?php esc_html_e('BIC / Swift', 'rapay'); ?></th>
+                                <th><?php esc_html_e('IBAN', 'beipay-bank-e-money-indonesia'); ?></th>
+                                <th><?php esc_html_e('BIC / Swift', 'beipay-bank-e-money-indonesia'); ?></th>
                             </tr>
                         </thead>
                         <tbody class="accounts">
@@ -200,7 +200,7 @@ class WC_Gateway_BRI extends WC_Payment_Gateway
                         </tbody>
                         <tfoot>
                             <tr>
-                                <th colspan="7"><a href="#" class="add button"><?php esc_html_e('+ Add account', 'rapay'); ?></a> <a href="#" class="remove_rows button"><?php esc_html_e('Remove selected account(s)', 'rapay'); ?></a></th>
+                                <th colspan="7"><a href="#" class="add button"><?php esc_html_e('+ Add account', 'beipay-bank-e-money-indonesia'); ?></a> <a href="#" class="remove_rows button"><?php esc_html_e('Remove selected account(s)', 'beipay-bank-e-money-indonesia'); ?></a></th>
                             </tr>
                         </tfoot>
                     </table>
@@ -328,7 +328,7 @@ class WC_Gateway_BRI extends WC_Payment_Gateway
         $locale  = $this->get_country_locale();
 
         // Get sortcode label in the $locale array and use appropriate one.
-        $sortcode = isset($locale[$country]['sortcode']['label']) ? $locale[$country]['sortcode']['label'] : __('Kode Cabang', 'rapay');
+        $sortcode = isset($locale[$country]['sortcode']['label']) ? $locale[$country]['sortcode']['label'] : __('Kode Cabang', 'beipay-bank-e-money-indonesia');
 
         $bank_bri_accounts = apply_filters('woocommerce_bank_bri_accounts', $this->account_details, $order_id);
 
@@ -350,7 +350,7 @@ class WC_Gateway_BRI extends WC_Payment_Gateway
                     'woocommerce_bank_bri_account_fields',
                     array(
                         'account_number' => array(
-                            'label' => __('Nomor Rekening', 'rapay'),
+                            'label' => __('Nomor Rekening', 'beipay-bank-e-money-indonesia'),
                             'value' => $bank_bri_account->account_number,
                         ),
                         'sort_code'      => array(
@@ -358,11 +358,11 @@ class WC_Gateway_BRI extends WC_Payment_Gateway
                             'value' => $bank_bri_account->sort_code,
                         ),
                         'iban'           => array(
-                            'label' => __('IBAN', 'rapay'),
+                            'label' => __('IBAN', 'beipay-bank-e-money-indonesia'),
                             'value' => $bank_bri_account->iban,
                         ),
                         'bic'            => array(
-                            'label' => __('BIC', 'rapay'),
+                            'label' => __('BIC', 'beipay-bank-e-money-indonesia'),
                             'value' => $bank_bri_account->bic,
                         ),
                     ),
@@ -380,7 +380,7 @@ class WC_Gateway_BRI extends WC_Payment_Gateway
             }
 
             if ($has_details) {
-                echo '<section class="woocommerce-bank-bri-bank-details"><h2 class="wc-bank-bri-bank-details-heading">' . esc_html__('Rincian rekening bank kami', 'rapay') . '</h2>' . wp_kses_post(PHP_EOL . $account_html) . '</section>';
+                echo '<section class="woocommerce-bank-bri-bank-details"><h2 class="wc-bank-bri-bank-details-heading">' . esc_html__('Rincian rekening bank kami', 'beipay-bank-e-money-indonesia') . '</h2>' . wp_kses_post(PHP_EOL . $account_html) . '</section>';
             }
         }
     }
@@ -406,7 +406,7 @@ class WC_Gateway_BRI extends WC_Payment_Gateway
              */
             $process_payment_status = apply_filters('woocommerce_bank_bri_process_payment_order_status', OrderStatus::ON_HOLD, $order);
             // Mark as on-hold (we're awaiting the payment).
-            $order->update_status($process_payment_status, __('Menunggu pembayaran dari Bank BRI.', 'rapay'));
+            $order->update_status($process_payment_status, __('Menunggu pembayaran dari Bank BRI.', 'beipay-bank-e-money-indonesia'));
         } else {
             $order->payment_complete();
         }
@@ -435,42 +435,42 @@ class WC_Gateway_BRI extends WC_Payment_Gateway
                 array(
                     'AU' => array(
                         'sortcode' => array(
-                            'label' => __('BSB', 'rapay'),
+                            'label' => __('BSB', 'beipay-bank-e-money-indonesia'),
                         ),
                     ),
                     'CA' => array(
                         'sortcode' => array(
-                            'label' => __('Bank transit number', 'rapay'),
+                            'label' => __('Bank transit number', 'beipay-bank-e-money-indonesia'),
                         ),
                     ),
                     'IN' => array(
                         'sortcode' => array(
-                            'label' => __('IFSC', 'rapay'),
+                            'label' => __('IFSC', 'beipay-bank-e-money-indonesia'),
                         ),
                     ),
                     'IT' => array(
                         'sortcode' => array(
-                            'label' => __('Branch sort', 'rapay'),
+                            'label' => __('Branch sort', 'beipay-bank-e-money-indonesia'),
                         ),
                     ),
                     'NZ' => array(
                         'sortcode' => array(
-                            'label' => __('Bank code', 'rapay'),
+                            'label' => __('Bank code', 'beipay-bank-e-money-indonesia'),
                         ),
                     ),
                     'SE' => array(
                         'sortcode' => array(
-                            'label' => __('Bank code', 'rapay'),
+                            'label' => __('Bank code', 'beipay-bank-e-money-indonesia'),
                         ),
                     ),
                     'US' => array(
                         'sortcode' => array(
-                            'label' => __('Routing number', 'rapay'),
+                            'label' => __('Routing number', 'beipay-bank-e-money-indonesia'),
                         ),
                     ),
                     'ZA' => array(
                         'sortcode' => array(
-                            'label' => __('Branch code', 'rapay'),
+                            'label' => __('Branch code', 'beipay-bank-e-money-indonesia'),
                         ),
                     ),
                 )
