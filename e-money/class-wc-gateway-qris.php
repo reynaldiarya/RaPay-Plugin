@@ -1,159 +1,230 @@
 <?php
-// Prevent direct access
-if ( ! defined( 'ABSPATH' ) ) { 
-    exit; // Exit if accessed directly
+
+/**
+ * Class WC_Gateway_QRIS file.
+ *
+ * @package WooCommerce\Gateways
+ */
+
+use Automattic\WooCommerce\Enums\OrderStatus;
+
+if (! defined('ABSPATH')) {
+    exit; // Exit if accessed directly.
 }
 
 /**
- * @package   RAPay - Bank dan e-Money Indonesia
- * @author    Reynaldi Arya
- * @category  Checkout Page
- * @copyright Copyright (c) 2021
- * @license   http://www.gnu.org/licenses/gpl-3.0.html GNU General Public License v3.0
- **/
+ * QRIS Payment Gateway.
+ *
+ * Provides a QRIS Payment Gateway. Based on standard WooCommerce BACS.
+ *
+ * @class       WC_Gateway_QRIS
+ * @extends     WC_Payment_Gateway
+ * @version     4.0.0
+ * @package     WooCommerce\Classes\Payment
+ */
+class WC_Gateway_QRIS extends WC_Payment_Gateway
+{
+    /**
+     * Unique ID for this gateway.
+     *
+     * @var string
+     */
+    public const ID = 'qris';
 
-// Constructor for the gateway
-class WC_Gateway_QRIS extends WC_Gateway_BACS {
-	function __construct() {
-		$this->id = "qris";
-		$this->method_title = __( "QRIS", 'woocommerce' );
-		$this->method_description = __( "Pembayaran melalui QRIS", 'woocommerce' );
-		$this->title = __( "Transfer QRIS", 'woocommerce' );
-        $this->icon = $this->enable_icon = 'yes' === $this->get_option( 'enable_icon' ) ? plugins_url('assets/logo-qris.png',__FILE__) : null;
-		$this->has_fields = false;
-		$this->init_form_fields();
-		$this->init_settings();
+    /**
+     * Array of locales
+     *
+     * @var array
+     */
+    public $locale;
 
-		foreach ( $this->settings as $setting_key => $value ) {
-          $this->$setting_key = $value;
-      }
-      if ( is_admin() ) {
-        add_action( 'woocommerce_update_options_payment_gateways_' . $this->id, array( $this, 'process_admin_options' ) );
-    }
-    add_action( 'woocommerce_thankyou_qris', array( $this, 'thankyou_page' ) );
-    add_action( 'woocommerce_email_before_order_table', array( $this, 'email_instructions' ), 10, 3 );
-     
- }
+    /**
+     * Gateway instructions that will be added to the thank you page and emails.
+     *
+     * @var string
+     */
+    public $instructions;
 
-// Initialise Gateway Settings Form Fields
- public function init_form_fields() {
-    $this->form_fields = array(
-        'enabled' => array(
-            'title'     => __( 'Enable / Disable', 'woocommerce' ),
-            'label'     => __( 'Enable <strong>QRIS</strong> Transfer Payment Method', 'woocommerce' ),
-            'type'      => 'checkbox',
-            'default'   => 'no',
-        ),
-        'title' => array(
-            'title'     => __( 'Title', 'woocommerce' ),
-            'type'      => 'text',
-            'desc_tip'  => __( 'Ini mengatur judul yang dilihat konsumen saat membayar', 'woocommerce' ),
-            'default'   => __( 'Transfer QRIS', 'woocommerce' ),
-        ),
-        'enable_icon' => array(
-            'title'         => __('Ikon Pembayaran', 'woocommerce'),
-            'label'         => __('Enable Ikon', 'woocommerce'),
-            'type'          => 'checkbox',
-            'description'   => '<img src="'.plugins_url('assets/logo-qris.png',__FILE__).'" style="height:100%;max-height:32px !important" />',
-            'default'       => 'no',
-        ),
-        'description' => array(
-            'title'     => __( 'Description', 'woocommerce' ),
-            'type'      => 'textarea',
-            'desc_tip'  => __( 'Deskripsi metode pembayaran yang akan dilihat pelanggan di halaman checkout Anda.', 'woocommerce' ),
-            'default'   => __( '', 'woocommerce' ),
-            // 'css'       => 'max-width:350px;'
-        ),
-        'instructions' => array(
-            'title'       => __( 'Instructions', 'woocommerce' ),
-            'type'        => 'textarea',
-            'description' => __( 'Instruksi yang akan ditambahkan ke halaman terima kasih dan email.', 'woocommerce' ),
-            'default'     => '',
-            'desc_tip'    => true,
-        ),
-        'kode_qr' => array(
-	    'title'       => __( 'Link QRIS', 'woocommerce' ),
-	    'type'        => 'text',	
-	    'description' => __( 'Masukkan Link QRIS.', 'woocommerce' ),
-	    'default'     => __( '', 'woocommerce' ),
-	    'desc_tip'    => true,
-	),
-    );      
-}	
+    /**
+     * QR Code URL
+     *
+     * @var string
+     */
+    public $qr_code;
 
-// Get bank details and place into a list format
-private function bank_details( $order_id = '' ) {
+    /**
+     * Constructor for the gateway.
+     */
+    public function __construct()
+    {
+        $this->id                 = self::ID;
+        $show_icon = 'yes' === $this->get_option('enable_icon', 'yes');
+        $icon_url = $show_icon ? plugins_url('assets/logo-qris.png', __FILE__) : '';
+        $this->icon               = apply_filters('woocommerce_qris_icon', $icon_url);
+        $this->has_fields         = false;
+        $this->method_title       = __('QRIS', 'rapay');
+        $this->method_description = __('Lakukan pembayaran melalui transfer langsung ke rekening QRIS.', 'rapay');
 
-    if ( empty( $this->kode_qr ) ) {
-        return;
+        // Load the settings.
+        $this->init_form_fields();
+        $this->init_settings();
+
+        // Define user set variables.
+        $this->title        = $this->get_option('title');
+        $this->description  = $this->get_option('description');
+        $this->instructions = $this->get_option('instructions');
+        $this->qr_code      = $this->get_option('qr_code');
+
+        // Actions.
+        add_action('woocommerce_update_options_payment_gateways_' . $this->id, array($this, 'process_admin_options'));
+        add_action('woocommerce_thankyou_' . $this->id, array($this, 'thankyou_page'));
+
+        // Customer Emails.
+        add_action('woocommerce_email_before_order_table', array($this, 'email_instructions'), 10, 3);
     }
 
-    // Get order and store in $order
-    $order          = wc_get_order( $order_id );
-
-    // Get the order country and country $locale
-    $country        = $order->get_billing_country();
-    $locale         = $this->get_country_locale();
-
-    // Get sortcode label in the $locale array and use appropriate one
-    $sortcode = isset( $locale[ $country ]['sortcode']['label'] ) ? $locale[ $country ]['sortcode']['label'] : __( 'Sort Code', 'woocommerce' );
-
-    echo '<strong><h2>' . __( 'Detail Rekening Bank untuk Memproses Pembayaran:', 'woocommerce' ) . '</h2></strong>' . PHP_EOL;
-
-    if( isset( $this->kode_qr ) && !empty( $this->kode_qr ) ){
-		?>
-			<img src="<?php echo esc_url( $this->kode_qr ); ?>" style="height:100%;max-height:500px;margin-bottom:35px !important" />',
-		<?php 
-	} 
-
-}
-
-// Output for the order received page
-public function thankyou_page( $order_id ) {
-    if ( $this->instructions ) {
-        echo '<h3>Instruksi Pembayaran</h3>';
-        echo wp_kses_post( wpautop( wptexturize( wp_kses_post( $this->instructions ) ) ) );
+    /**
+     * Initialise Gateway Settings Form Fields.
+     */
+    public function init_form_fields()
+    {
+        $this->form_fields = array(
+            'enabled'         => array(
+                'title'   => __('Enable/Disable', 'rapay'),
+                'type'    => 'checkbox',
+                'label'   => __('Enable QRIS', 'rapay'),
+                'default' => 'no',
+            ),
+            'title'           => array(
+                'title'       => __('Title', 'rapay'),
+                'type'        => 'safe_text',
+                'description' => __('Mengatur judul yang dilihat pengguna selama proses checkout.', 'rapay'),
+                'default'     => __('Transfer QRIS', 'rapay'),
+                'desc_tip'    => true,
+            ),
+            'enable_icon' => array(
+                'title'         => __('Icon', 'rapay'),
+                'label'         => __('Enable Icon', 'rapay'),
+                'type'          => 'checkbox',
+                'description'   => '<img src="' . plugins_url('assets/logo-qris.png', __FILE__) . '" style="height:100%;max-height:32px !important" />',
+                'default'       => 'yes',
+            ),
+            'description'     => array(
+                'title'       => __('Description', 'rapay'),
+                'type'        => 'textarea',
+                'description' => __('Deskripsi metode pembayaran yang akan dilihat pelanggan pada halaman checkout Anda.', 'rapay'),
+                'default'     => __('Lakukan pembayaran langsung ke rekening QRIS kami. Mohon gunakan ID Pesanan Anda sebagai referensi pembayaran. Pesanan Anda tidak akan dikirimkan hingga dana telah masuk ke rekening kami.', 'rapay'),
+                'desc_tip'    => true,
+            ),
+            'instructions'    => array(
+                'title'       => __('Instructions', 'rapay'),
+                'type'        => 'textarea',
+                'description' => __('Petunjuk yang akan ditambahkan ke halaman ucapan terima kasih dan email.', 'rapay'),
+                'default'     => '',
+                'desc_tip'    => true,
+            ),
+            'qr_code' => array(
+                'title'       => __('Link QRIS', 'rapay'),
+                'type'        => 'text',
+                'description' => __('Masukkan Link QRIS.', 'rapay'),
+                'default'     => __('', 'rapay'),
+                'desc_tip'    => true,
+            ),
+        );
     }
-    $this->bank_details( $order_id );
-}
 
-// Process the payment and return the result
-public function process_payment( $order_id ) {
-
-    $order = wc_get_order( $order_id );
-    
-    // Mark as on-hold (we're awaiting the payment)
-    $order->update_status( 'on-hold', __( 'Menunggu Pembayaran melalui QRIS', 'woocommerce' ) );
-
-    // Reduce stock levels
-    $order->reduce_order_stock();
-
-    // Remove cart
-    WC()->cart->empty_cart();
-
-    // Return thankyou redirect
-    return array(
-        'result'    => 'success',
-        'redirect'  => $this->get_return_url( $order )
-    );
-
-}
-
-// Email Instructions
-public function email_instructions( $order, $sent_to_admin, $plain_text = false ) {
-
-    if ( ! $sent_to_admin && 'qris' === $order->get_payment_method() && $order->has_status( 'on-hold' ) ) {
-        if ( $this->instructions ) {
-            echo wp_kses_post( wpautop( wptexturize( $this->instructions ) ) . PHP_EOL );
+    /**
+     * Output for the order received page.
+     *
+     * @param int $order_id Order ID.
+     */
+    public function thankyou_page($order_id)
+    {
+        if ($this->instructions) {
+            echo wp_kses_post(wpautop(wptexturize(wp_kses_post($this->instructions))));
         }
-        $this->bank_details( $order->id );
+        $this->bank_details($order_id);
     }
 
+    /**
+     * Add content to the WC emails.
+     *
+     * @param WC_Order $order Order object.
+     * @param bool     $sent_to_admin Sent to admin.
+     * @param bool     $plain_text Email format: plain text or HTML.
+     */
+    public function email_instructions($order, $sent_to_admin, $plain_text = false)
+    {
+        if (! $sent_to_admin && self::ID === $order->get_payment_method()) {
+            /**
+             * Filter the email instructions order status.
+             *
+             * @since 7.4
+             *
+             * @param string $terms The order status.
+             * @param object $order The order object.
+             */
+            $instructions_order_status = apply_filters('woocommerce_qris_email_instructions_order_status', OrderStatus::ON_HOLD, $order);
+            if ($order->has_status($instructions_order_status)) {
+                if ($this->instructions) {
+                    echo wp_kses_post(wpautop(wptexturize($this->instructions)) . PHP_EOL);
+                }
+                $this->bank_details($order->get_id());
+            }
+        }
+    }
 
+    /**
+     * Get bank details and place into a list format.
+     *
+     * @param int $order_id Order ID.
+     */
+    private function bank_details($order_id = '')
+    {
+        if (empty($this->qr_code)) {
+            return;
+        }
+
+        if (isset($this->qr_code) && !empty($this->qr_code)) {
+            ?>
+            <img src="<?php echo esc_url($this->qr_code); ?>" style="height:100%;max-height:500px;margin-bottom:35px !important" />
+<?php
+        }
+    }
+
+    /**
+     * Process the payment and return the result.
+     *
+     * @param int $order_id Order ID.
+     * @return array
+     */
+    public function process_payment($order_id)
+    {
+        $order = wc_get_order($order_id);
+
+        if ($order->get_total() > 0) {
+            /**
+             * Filter the order status for QRIS payment.
+             *
+             * @since 3.4.0
+             *
+             * @param string $default_status The default order status.
+             * @param object $order          The order object.
+             */
+            $process_payment_status = apply_filters('woocommerce_qris_process_payment_order_status', OrderStatus::ON_HOLD, $order);
+            // Mark as on-hold (we're awaiting the payment).
+            $order->update_status($process_payment_status, __('Menunggu pembayaran dari QRIS.', 'rapay'));
+        } else {
+            $order->payment_complete();
+        }
+
+        // Remove cart.
+        WC()->cart->empty_cart();
+
+        // Return thankyou redirect.
+        return array(
+            'result'   => 'success',
+            'redirect' => $this->get_return_url($order),
+        );
+    }
 }
-
-
-}
-
-
-?>

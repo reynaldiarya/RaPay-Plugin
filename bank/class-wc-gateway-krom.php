@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Class WC_Gateway_Bank_Jenius file.
+ * Class WC_Gateway_Bank_Krom file.
  *
  * @package WooCommerce\Gateways
  */
@@ -13,23 +13,23 @@ if (! defined('ABSPATH')) {
 }
 
 /**
- * Bank Jenius Payment Gateway.
+ * Bank Krom Payment Gateway.
  *
- * Provides a Bank Jenius Payment Gateway. Based on standard WooCommerce BACS.
+ * Provides a Bank Krom Payment Gateway. Based on standard WooCommerce BACS.
  *
- * @class       WC_Gateway_Jenius
+ * @class       WC_Gateway_Krom
  * @extends     WC_Payment_Gateway
  * @version     4.0.0
  * @package     WooCommerce\Classes\Payment
  */
-class WC_Gateway_Jenius extends WC_Payment_Gateway
+class WC_Gateway_Krom extends WC_Payment_Gateway
 {
     /**
      * Unique ID for this gateway.
      *
      * @var string
      */
-    public const ID = 'bank_jenius';
+    public const ID = 'bank_krom';
 
     /**
      * Array of locales
@@ -59,11 +59,11 @@ class WC_Gateway_Jenius extends WC_Payment_Gateway
     {
         $this->id                 = self::ID;
         $show_icon = 'yes' === $this->get_option('enable_icon', 'yes');
-        $icon_url = $show_icon ? plugins_url('assets/logo-jenius.png', __FILE__) : '';
-        $this->icon               = apply_filters('woocommerce_bank_jenius_icon', $icon_url);
+        $icon_url = $show_icon ? plugins_url('assets/logo-krom.png', __FILE__) : '';
+        $this->icon               = apply_filters('woocommerce_bank_krom_icon', $icon_url);
         $this->has_fields         = false;
-        $this->method_title       = __('Bank Jenius', 'rapay');
-        $this->method_description = __('Lakukan pembayaran melalui transfer langsung ke rekening Bank Jenius.', 'rapay');
+        $this->method_title       = __('Bank Krom', 'rapay');
+        $this->method_description = __('Lakukan pembayaran melalui transfer langsung ke rekening Bank Krom.', 'rapay');
 
         // Load the settings.
         $this->init_form_fields();
@@ -74,9 +74,9 @@ class WC_Gateway_Jenius extends WC_Payment_Gateway
         $this->description  = $this->get_option('description');
         $this->instructions = $this->get_option('instructions');
 
-        // Bank Jenius account fields shown on the thanks page and in emails.
+        // Bank Krom account fields shown on the thanks page and in emails.
         $this->account_details = get_option(
-            'woocommerce_bank_jenius_accounts',
+            'woocommerce_bank_krom_accounts',
             array(
                 array(
                     'account_name'   => $this->get_option('account_name'),
@@ -106,28 +106,28 @@ class WC_Gateway_Jenius extends WC_Payment_Gateway
             'enabled'         => array(
                 'title'   => __('Enable/Disable', 'rapay'),
                 'type'    => 'checkbox',
-                'label'   => __('Enable Bank Jenius', 'rapay'),
+                'label'   => __('Enable Bank Krom', 'rapay'),
                 'default' => 'no',
             ),
             'title'           => array(
                 'title'       => __('Title', 'rapay'),
                 'type'        => 'safe_text',
                 'description' => __('Mengatur judul yang dilihat pengguna selama proses checkout.', 'rapay'),
-                'default'     => __('Transfer Bank Jenius', 'rapay'),
+                'default'     => __('Transfer Bank Krom', 'rapay'),
                 'desc_tip'    => true,
             ),
             'enable_icon' => array(
                 'title'         => __('Icon', 'rapay'),
                 'label'         => __('Enable Icon', 'rapay'),
                 'type'          => 'checkbox',
-                'description'   => '<img src="' . plugins_url('assets/logo-jenius.png', __FILE__) . '" style="height:100%;max-height:32px !important" />',
+                'description'   => '<img src="' . plugins_url('assets/logo-krom.png', __FILE__) . '" style="height:100%;max-height:32px !important" />',
                 'default'       => 'no',
             ),
             'description'     => array(
                 'title'       => __('Description', 'rapay'),
                 'type'        => 'textarea',
                 'description' => __('Deskripsi metode pembayaran yang akan dilihat pelanggan pada halaman checkout Anda.', 'rapay'),
-                'default'     => __('Lakukan pembayaran langsung ke rekening Bank Jenius kami. Mohon gunakan ID Pesanan Anda sebagai referensi pembayaran. Pesanan Anda tidak akan dikirimkan hingga dana telah masuk ke rekening kami.', 'rapay'),
+                'default'     => __('Lakukan pembayaran langsung ke rekening Bank Krom kami. Mohon gunakan ID Pesanan Anda sebagai referensi pembayaran. Pesanan Anda tidak akan dikirimkan hingga dana telah masuk ke rekening kami.', 'rapay'),
                 'desc_tip'    => true,
             ),
             'instructions'    => array(
@@ -166,7 +166,7 @@ class WC_Gateway_Jenius extends WC_Payment_Gateway
                     <?php echo wp_kses_post(wc_help_tip(__('Rincian akun ini akan ditampilkan di halaman terima kasih pesanan dan email konfirmasi.', 'rapay'))); ?>
                 </label>
             </th>
-            <td class="forminp" id="bank_jenius_accounts">
+            <td class="forminp" id="bank_krom_accounts">
                 <div class="wc_input_table_wrapper">
                     <table class="widefat wc_input_table sortable" cellspacing="0">
                         <thead>
@@ -188,11 +188,11 @@ class WC_Gateway_Jenius extends WC_Payment_Gateway
 
                 echo '<tr class="account">
 										<td class="sort"></td>
-										<td><input type="text" value="' . esc_attr(wp_unslash($account['account_name'])) . '" name="bank_jenius_account_name[' . esc_attr($i) . ']" /></td>
-										<td><input type="text" value="' . esc_attr($account['account_number']) . '" name="bank_jenius_account_number[' . esc_attr($i) . ']" /></td>
-										<td><input type="text" value="' . esc_attr($account['sort_code']) . '" name="bank_jenius_sort_code[' . esc_attr($i) . ']" /></td>
-										<td><input type="text" value="' . esc_attr($account['iban']) . '" name="bank_jenius_iban[' . esc_attr($i) . ']" /></td>
-										<td><input type="text" value="' . esc_attr($account['bic']) . '" name="bank_jenius_bic[' . esc_attr($i) . ']" /></td>
+										<td><input type="text" value="' . esc_attr(wp_unslash($account['account_name'])) . '" name="bank_krom_account_name[' . esc_attr($i) . ']" /></td>
+										<td><input type="text" value="' . esc_attr($account['account_number']) . '" name="bank_krom_account_number[' . esc_attr($i) . ']" /></td>
+										<td><input type="text" value="' . esc_attr($account['sort_code']) . '" name="bank_krom_sort_code[' . esc_attr($i) . ']" /></td>
+										<td><input type="text" value="' . esc_attr($account['iban']) . '" name="bank_krom_iban[' . esc_attr($i) . ']" /></td>
+										<td><input type="text" value="' . esc_attr($account['bic']) . '" name="bank_krom_bic[' . esc_attr($i) . ']" /></td>
 									</tr>';
             }
         }
@@ -207,18 +207,18 @@ class WC_Gateway_Jenius extends WC_Payment_Gateway
                 </div>
                 <script type="text/javascript">
                     jQuery(function() {
-                        jQuery('#bank_jenius_accounts').on('click', 'a.add', function() {
+                        jQuery('#bank_krom_accounts').on('click', 'a.add', function() {
 
-                            var size = jQuery('#bank_jenius_accounts').find('tbody .account').length;
+                            var size = jQuery('#bank_krom_accounts').find('tbody .account').length;
 
                             jQuery('<tr class="account">\
 									<td class="sort"></td>\
-									<td><input type="text" name="bank_jenius_account_name[' + size + ']" /></td>\
-									<td><input type="text" name="bank_jenius_account_number[' + size + ']" /></td>\
-									<td><input type="text" name="bank_jenius_sort_code[' + size + ']" /></td>\
-									<td><input type="text" name="bank_jenius_iban[' + size + ']" /></td>\
-									<td><input type="text" name="bank_jenius_bic[' + size + ']" /></td>\
-								</tr>').appendTo('#bank_jenius_accounts table tbody');
+									<td><input type="text" name="bank_krom_account_name[' + size + ']" /></td>\
+									<td><input type="text" name="bank_krom_account_number[' + size + ']" /></td>\
+									<td><input type="text" name="bank_krom_sort_code[' + size + ']" /></td>\
+									<td><input type="text" name="bank_krom_iban[' + size + ']" /></td>\
+									<td><input type="text" name="bank_krom_bic[' + size + ']" /></td>\
+								</tr>').appendTo('#bank_krom_accounts table tbody');
 
                             return false;
                         });
@@ -239,14 +239,14 @@ class WC_Gateway_Jenius extends WC_Payment_Gateway
 
         // phpcs:disable WordPress.Security.NonceVerification.Missing -- Nonce verification already handled in WC_Admin_Settings::save()
         if (
-            isset($_POST['bank_jenius_account_name']) && isset($_POST['bank_jenius_account_number'])
-            && isset($_POST['bank_jenius_sort_code']) && isset($_POST['bank_jenius_iban']) && isset($_POST['bank_jenius_bic'])
+            isset($_POST['bank_krom_account_name']) && isset($_POST['bank_krom_account_number'])
+            && isset($_POST['bank_krom_sort_code']) && isset($_POST['bank_krom_iban']) && isset($_POST['bank_krom_bic'])
         ) {
-            $account_names   = wc_clean(wp_unslash($_POST['bank_jenius_account_name']));
-            $account_numbers = wc_clean(wp_unslash($_POST['bank_jenius_account_number']));
-            $sort_codes      = wc_clean(wp_unslash($_POST['bank_jenius_sort_code']));
-            $ibans           = wc_clean(wp_unslash($_POST['bank_jenius_iban']));
-            $bics            = wc_clean(wp_unslash($_POST['bank_jenius_bic']));
+            $account_names   = wc_clean(wp_unslash($_POST['bank_krom_account_name']));
+            $account_numbers = wc_clean(wp_unslash($_POST['bank_krom_account_number']));
+            $sort_codes      = wc_clean(wp_unslash($_POST['bank_krom_sort_code']));
+            $ibans           = wc_clean(wp_unslash($_POST['bank_krom_iban']));
+            $bics            = wc_clean(wp_unslash($_POST['bank_krom_bic']));
 
             foreach ($account_names as $i => $name) {
                 if (! isset($account_names[$i])) {
@@ -264,8 +264,8 @@ class WC_Gateway_Jenius extends WC_Payment_Gateway
         }
         // phpcs:enable
 
-        do_action('woocommerce_update_option', array('id' => 'woocommerce_bank_jenius_accounts'));
-        update_option('woocommerce_bank_jenius_accounts', $accounts);
+        do_action('woocommerce_update_option', array('id' => 'woocommerce_bank_krom_accounts'));
+        update_option('woocommerce_bank_krom_accounts', $accounts);
     }
 
     /**
@@ -299,7 +299,7 @@ class WC_Gateway_Jenius extends WC_Payment_Gateway
              * @param string $terms The order status.
              * @param object $order The order object.
              */
-            $instructions_order_status = apply_filters('woocommerce_bank_jenius_email_instructions_order_status', OrderStatus::ON_HOLD, $order);
+            $instructions_order_status = apply_filters('woocommerce_bank_krom_email_instructions_order_status', OrderStatus::ON_HOLD, $order);
             if ($order->has_status($instructions_order_status)) {
                 if ($this->instructions) {
                     echo wp_kses_post(wpautop(wptexturize($this->instructions)) . PHP_EOL);
@@ -330,40 +330,40 @@ class WC_Gateway_Jenius extends WC_Payment_Gateway
         // Get sortcode label in the $locale array and use appropriate one.
         $sortcode = isset($locale[$country]['sortcode']['label']) ? $locale[$country]['sortcode']['label'] : __('Kode Cabang', 'rapay');
 
-        $bank_jenius_accounts = apply_filters('woocommerce_bank_jenius_accounts', $this->account_details, $order_id);
+        $bank_krom_accounts = apply_filters('woocommerce_bank_krom_accounts', $this->account_details, $order_id);
 
-        if (! empty($bank_jenius_accounts)) {
+        if (! empty($bank_krom_accounts)) {
             $account_html = '';
             $has_details  = false;
 
-            foreach ($bank_jenius_accounts as $bank_jenius_account) {
-                $bank_jenius_account = (object) $bank_jenius_account;
+            foreach ($bank_krom_accounts as $bank_krom_account) {
+                $bank_krom_account = (object) $bank_krom_account;
 
-                if ($bank_jenius_account->account_name) {
-                    $account_html .= '<h3 class="wc-bank-jenius-bank-details-account-name">' . wp_kses_post(wp_unslash(implode(' - ', array_filter([$bank_jenius_account->account_name ?? null, $this->method_title ?? null])))) . ':</h3>' . PHP_EOL;
+                if ($bank_krom_account->account_name) {
+                    $account_html .= '<h3 class="wc-bank-krom-bank-details-account-name">' . wp_kses_post(wp_unslash(implode(' - ', array_filter([$bank_krom_account->account_name ?? null, $this->method_title ?? null])))) . ':</h3>' . PHP_EOL;
                 }
 
-                $account_html .= '<ul class="wc-bank-jenius-bank-details order_details bacs_details">' . PHP_EOL;
+                $account_html .= '<ul class="wc-bank-krom-bank-details order_details bacs_details">' . PHP_EOL;
 
-                // Bank Jenius account fields shown on the thanks page and in emails.
+                // Bank Krom account fields shown on the thanks page and in emails.
                 $account_fields = apply_filters(
-                    'woocommerce_bank_jenius_account_fields',
+                    'woocommerce_bank_krom_account_fields',
                     array(
                         'account_number' => array(
                             'label' => __('Nomor Rekening', 'rapay'),
-                            'value' => $bank_jenius_account->account_number,
+                            'value' => $bank_krom_account->account_number,
                         ),
                         'sort_code'      => array(
                             'label' => $sortcode,
-                            'value' => $bank_jenius_account->sort_code,
+                            'value' => $bank_krom_account->sort_code,
                         ),
                         'iban'           => array(
                             'label' => __('IBAN', 'rapay'),
-                            'value' => $bank_jenius_account->iban,
+                            'value' => $bank_krom_account->iban,
                         ),
                         'bic'            => array(
                             'label' => __('BIC', 'rapay'),
-                            'value' => $bank_jenius_account->bic,
+                            'value' => $bank_krom_account->bic,
                         ),
                     ),
                     $order_id
@@ -380,7 +380,7 @@ class WC_Gateway_Jenius extends WC_Payment_Gateway
             }
 
             if ($has_details) {
-                echo '<section class="woocommerce-bank-jenius-bank-details"><h2 class="wc-bank-jenius-bank-details-heading">' . esc_html__('Rincian rekening bank kami', 'rapay') . '</h2>' . wp_kses_post(PHP_EOL . $account_html) . '</section>';
+                echo '<section class="woocommerce-bank-krom-bank-details"><h2 class="wc-bank-krom-bank-details-heading">' . esc_html__('Rincian rekening bank kami', 'rapay') . '</h2>' . wp_kses_post(PHP_EOL . $account_html) . '</section>';
             }
         }
     }
@@ -397,16 +397,16 @@ class WC_Gateway_Jenius extends WC_Payment_Gateway
 
         if ($order->get_total() > 0) {
             /**
-             * Filter the order status for Bank Jenius payment.
+             * Filter the order status for Bank Krom payment.
              *
              * @since 3.4.0
              *
              * @param string $default_status The default order status.
              * @param object $order          The order object.
              */
-            $process_payment_status = apply_filters('woocommerce_bank_jenius_process_payment_order_status', OrderStatus::ON_HOLD, $order);
+            $process_payment_status = apply_filters('woocommerce_bank_krom_process_payment_order_status', OrderStatus::ON_HOLD, $order);
             // Mark as on-hold (we're awaiting the payment).
-            $order->update_status($process_payment_status, __('Menunggu pembayaran dari Bank Jenius.', 'rapay'));
+            $order->update_status($process_payment_status, __('Menunggu pembayaran dari Bank Krom.', 'rapay'));
         } else {
             $order->payment_complete();
         }
@@ -431,7 +431,7 @@ class WC_Gateway_Jenius extends WC_Payment_Gateway
         if (empty($this->locale)) {
             // Locale information to be used - only those that are not 'Sort Code'.
             $this->locale = apply_filters(
-                'woocommerce_get_bank_jenius_locale',
+                'woocommerce_get_bank_krom_locale',
                 array(
                     'AU' => array(
                         'sortcode' => array(
