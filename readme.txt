@@ -30,7 +30,7 @@ By default, WooCommerce only provides a generic bank transfer option. This plugi
 * **QRIS:** Standard QRIS payment method support.
 
 == Installation ==
-1.  Upload the plugin files to the `/wp-content/plugins/beipay-bank-e-money-indonesia` directory, or install the plugin through the WordPress plugins screen directly.
+1.  Upload the plugin files to the `/wp-content/plugins/beipay-for-woocommerce` directory, or install the plugin through the WordPress plugins screen directly.
 2.  Activate the plugin through the 'Plugins' screen in WordPress.
 3.  Go to **WooCommerce > Settings > Payments**.
 4.  Enable the specific banks or e-money gateways you wish to accept.

@@ -37,7 +37,7 @@ final class BEIPay_Blocks_Support extends AbstractPaymentMethodType
         if ($gateway) {
             $this->gateway = $gateway;
             $this->name = $gateway->id;
-            $this->script_handle = 'beipay-bank-e-money-indonesia-' . $this->name . '-blocks';
+            $this->script_handle = 'beipay-for-woocommerce-' . $this->name . '-blocks';
         }
     }
 
@@ -74,9 +74,9 @@ final class BEIPay_Blocks_Support extends AbstractPaymentMethodType
 
         $script_asset = require $script_asset_path;
 
-        if (!wp_script_is('beipay-bank-e-money-indonesia-blocks-integration', 'registered')) {
+        if (!wp_script_is('beipay-for-woocommerce-blocks-integration', 'registered')) {
             wp_register_script(
-                'beipay-bank-e-money-indonesia-blocks-integration',
+                'beipay-for-woocommerce-blocks-integration',
                 $script_url,
                 $script_asset['dependencies'],
                 $script_asset['version'],
@@ -84,7 +84,7 @@ final class BEIPay_Blocks_Support extends AbstractPaymentMethodType
             );
         }
 
-        return ['beipay-bank-e-money-indonesia-blocks-integration'];
+        return ['beipay-for-woocommerce-blocks-integration'];
     }
 
     /**

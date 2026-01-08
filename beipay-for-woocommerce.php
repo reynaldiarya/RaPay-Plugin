@@ -2,7 +2,7 @@
 
 /**
  * Plugin Name:       BEIPay - Bank dan e-Money Indonesia
- * Plugin URI:        https://wordpress.org/plugins/beipay-bank-dan-e-money-indonesia-for-woocommerce
+ * Plugin URI:        https://wordpress.org/plugins/beipay-for-woocommerce
  * Description:       Plugin Pembayaran Bank dan e-Money Indonesia untuk WooCommerce. Mendukung kode unik pembayaran.
  * Version:           4.0.0
  * Author:            Reynaldi Arya
@@ -13,7 +13,7 @@
  * WC tested up to:   10.4
  * License:           GNU General Public License v3.0
  * License URI:       http://www.gnu.org/licenses/gpl-3.0.html
- * Text Domain:       beipay-bank-e-money-indonesia
+ * Text Domain:       beipay-for-woocommerce
  */
 
 if (! defined('ABSPATH')) {
@@ -93,7 +93,7 @@ add_action('woocommerce_blocks_loaded', function () {
         return;
     }
 
-    require_once dirname(__FILE__) . '/blocks/class-beipay-bank-e-money-indonesia-blocks-support.php';
+    require_once dirname(__FILE__) . '/blocks/class-beipay-for-woocommerce-blocks-support.php';
 
     add_action(
         'woocommerce_blocks_payment_method_type_registration',
@@ -187,7 +187,7 @@ add_filter('plugin_row_meta', function ($links, $plugin_file) {
  * 6. Pengaturan Tab "Advanced" untuk Kode Unik
  */
 add_filter('woocommerce_get_sections_advanced', function ($sections) {
-    $sections['puc'] = __('Kode Pembayaran', 'beipay-bank-e-money-indonesia');
+    $sections['puc'] = __('Kode Pembayaran', 'beipay-for-woocommerce');
     return $sections;
 });
 
@@ -196,42 +196,42 @@ add_filter('woocommerce_get_settings_advanced', function ($settings, $current_se
         $settings_puc = array();
 
         $settings_puc[] = array(
-            'name' => __('Pengaturan Kode Unik', 'beipay-bank-e-money-indonesia'),
+            'name' => __('Pengaturan Kode Unik', 'beipay-for-woocommerce'),
             'type' => 'title',
-            'desc' => __('Tambahkan 3 digit angka unik pada total pembayaran untuk mempermudah verifikasi transfer manual.', 'beipay-bank-e-money-indonesia'),
+            'desc' => __('Tambahkan 3 digit angka unik pada total pembayaran untuk mempermudah verifikasi transfer manual.', 'beipay-for-woocommerce'),
             'id'   => 'puc_options',
         );
 
         $settings_puc[] = array(
-            'name'    => __('Aktifkan Kode Unik', 'beipay-bank-e-money-indonesia'),
+            'name'    => __('Aktifkan Kode Unik', 'beipay-for-woocommerce'),
             'type'    => 'checkbox',
-            'desc'    => __('Ya, aktifkan penambahan kode unik otomatis.', 'beipay-bank-e-money-indonesia'),
+            'desc'    => __('Ya, aktifkan penambahan kode unik otomatis.', 'beipay-for-woocommerce'),
             'id'      => 'woocommerce_puc_enabled',
             'default' => 'no',
         );
 
         $settings_puc[] = array(
-            'name'        => __('Label Kode Unik', 'beipay-bank-e-money-indonesia'),
+            'name'        => __('Label Kode Unik', 'beipay-for-woocommerce'),
             'type'        => 'text',
-            'desc'        => __('Teks yang muncul di halaman checkout.', 'beipay-bank-e-money-indonesia'),
+            'desc'        => __('Teks yang muncul di halaman checkout.', 'beipay-for-woocommerce'),
             'id'          => 'woocommerce_puc_title',
             'default'     => 'Kode Pembayaran',
             'placeholder' => 'Kode Pembayaran',
         );
 
         $settings_puc[] = array(
-            'name'              => __('Angka Minimal', 'beipay-bank-e-money-indonesia'),
+            'name'              => __('Angka Minimal', 'beipay-for-woocommerce'),
             'type'              => 'number',
-            'desc'              => __('Batas bawah angka acak (Misal: 1).', 'beipay-bank-e-money-indonesia'),
+            'desc'              => __('Batas bawah angka acak (Misal: 1).', 'beipay-for-woocommerce'),
             'id'                => 'woocommerce_puc_min',
             'default'           => '1',
             'custom_attributes' => array('min' => 1)
         );
 
         $settings_puc[] = array(
-            'name'    => __('Angka Maksimal', 'beipay-bank-e-money-indonesia'),
+            'name'    => __('Angka Maksimal', 'beipay-for-woocommerce'),
             'type'    => 'number',
-            'desc'    => __('Batas atas angka acak (Misal: 999).', 'beipay-bank-e-money-indonesia'),
+            'desc'    => __('Batas atas angka acak (Misal: 999).', 'beipay-for-woocommerce'),
             'id'      => 'woocommerce_puc_max',
             'default' => '999',
             'custom_attributes' => array('max' => 999)
