@@ -158,7 +158,7 @@ class WC_Gateway_GoPay extends WC_Payment_Gateway
         // Get sortcode label in the $locale array and use appropriate one.
         $sortcode = isset($locale[$country]['sortcode']['label']) ? $locale[$country]['sortcode']['label'] : __('Kode Cabang', 'indobe-for-woocommerce');
 
-?>
+        ?>
         <tr valign="top">
             <th scope="row" class="titledesc">
                 <label>
@@ -181,12 +181,12 @@ class WC_Gateway_GoPay extends WC_Payment_Gateway
                         </thead>
                         <tbody class="accounts">
                             <?php
-                            $i = -1;
-                            if ($this->account_details) {
-                                foreach ($this->account_details as $account) {
-                                    ++$i;
+                                    $i = -1;
+        if ($this->account_details) {
+            foreach ($this->account_details as $account) {
+                ++$i;
 
-                                    echo '<tr class="account">
+                echo '<tr class="account">
 										<td class="sort"></td>
 										<td><input type="text" value="' . esc_attr(wp_unslash($account['account_name'])) . '" name="gopay_account_name[' . esc_attr($i) . ']" /></td>
 										<td><input type="text" value="' . esc_attr($account['account_number']) . '" name="gopay_account_number[' . esc_attr($i) . ']" /></td>
@@ -194,9 +194,9 @@ class WC_Gateway_GoPay extends WC_Payment_Gateway
 										<td><input type="text" value="' . esc_attr($account['iban']) . '" name="gopay_iban[' . esc_attr($i) . ']" /></td>
 										<td><input type="text" value="' . esc_attr($account['bic']) . '" name="gopay_bic[' . esc_attr($i) . ']" /></td>
 									</tr>';
-                                }
-                            }
-                            ?>
+            }
+        }
+        ?>
                         </tbody>
                         <tfoot>
                             <tr>

@@ -121,7 +121,7 @@ add_action('plugins_loaded', function () {
     if (! class_exists('WooCommerce')) {
         // 1. Tampilkan Notifikasi Error
         add_action('admin_notices', function () {
-?>
+            ?>
             <div class="notice notice-error is-dismissible">
                 <p>
                     <strong>Indobe Error:</strong> WooCommerce tidak ditemukan!

@@ -55,70 +55,15 @@ Yes, you can configure the minimum and maximum range for the unique random code 
 
 == Upgrade Notice ==
 = 1.0.0 =
-Major update: Added support for High-Performance Order Storage (HPOS) and WooCommerce Cart/Checkout Blocks. Please test on a staging site before updating on production.
+Initial release with HPOS and WooCommerce Cart/Checkout Blocks support.
 
 == Changelog ==
-= 1.0.0 - December 17, 2025 =
-* Compatibility: WooCommerce 10.4 and WordPress 6.9
-* Added: HPOS (High-Performance Order Storage) support
-* Added: Cart/Checkout Blocks support for block-based checkout
-* Improved: Standardized all gateway classes and IDs
-* Improved: Streamlined asset loading and removed code duplication
-* Added: Krom Payment
-
-= 3.0.2 - October 16, 2022 =
-* Add Setting and Donate Button
-
-= 3.0.1 - October 16, 2022 =
-* Fixed Bug
-
-= 3.0.0 - October 16, 2022 =
-* Add Pembayaran QRIS
-
-= 2.7.0 - May 23, 2021 =
-* Add Pembayaran Allo Bank
-
-= 2.5.0 - December 29, 2021 =
-* Add Pembayaran Seabank
-
-= 2.3.0 - July 26, 2021 =
-* Add Pembayaran TMRW
-* Add Pembayaran Line Bank
-
-= 2.2.0 - July 12, 2021 =
-* Add Angka Minimum and Maximum Kode Unik Pembayaran untuk Diacak
-* Add Pembayaran Bank Muamalat
-
-= 2.0.1 - July 07, 2021 =
-* Improve Security
-
-= 2.0.0 - July 06, 2021 =
-* Add Pembayaran Bank Danamon
-* Add Pembayaran Bank Tabungan Negara
-* Add Pembayaran Bank Syariah Indonesia
-* Add Pembayaran Bank Permata
-
-= 1.9.0 - July 01, 2021 =
-* Fixed Bug
-
-= 1.8.0 - June 27, 2021 =
-* Add Pembayaran Bank Jago
-* Add Pembayaran Bank Neo Commerce
-* Add Pembayaran Digibank
-* Add Pembayaran Citibank
-* Add Pembayaran HSBC
-* Add Pembayaran Bank OCBC NISP
-* Add Pembayaran Bank CIMB Niaga
-* Add Pembayaran Jenius
-
-= 1.5.0 - June 26, 2021 =
-* Add Ikon pembayaran
-
-= 1.4.0 - June 23, 2021 =
-* Add Pembayaran LinkAja
-
-= 1.2.0 - June 18, 2021 =
-* Fixed Bug
-
-= 1.0.0 - May 23, 2021 =
+= 1.0.0 - February 18, 2026 =
 * Initial Release
+* Compatibility: WooCommerce 10.4 and WordPress 6.9
+* Feature: HPOS (High-Performance Order Storage) support
+* Feature: Cart/Checkout Blocks support for block-based checkout
+* Feature: 22 Bank payment methods and 5 e-Money/Wallet payment methods
+* Feature: QRIS payment method support
+* Feature: Unique Payment Code (Kode Unik) with configurable range
+* Feature: Payment icons for all methods
