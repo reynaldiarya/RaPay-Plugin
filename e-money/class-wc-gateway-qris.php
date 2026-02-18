@@ -19,7 +19,7 @@ if (! defined('ABSPATH')) {
  *
  * @class       WC_Gateway_QRIS
  * @extends     WC_Payment_Gateway
- * @version     4.0.0
+ * @version     1.0.0
  * @package     WooCommerce\Classes\Payment
  */
 class WC_Gateway_QRIS extends WC_Payment_Gateway
@@ -186,7 +186,7 @@ class WC_Gateway_QRIS extends WC_Payment_Gateway
         }
 
         if (isset($this->qr_code) && !empty($this->qr_code)) {
-            ?>
+?>
             <img src="<?php echo esc_url($this->qr_code); ?>" style="height:100%;max-height:500px;margin-bottom:35px !important" />
 <?php
         }

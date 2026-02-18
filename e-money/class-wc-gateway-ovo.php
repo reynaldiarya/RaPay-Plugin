@@ -19,7 +19,7 @@ if (! defined('ABSPATH')) {
  *
  * @class       WC_Gateway_OVO
  * @extends     WC_Payment_Gateway
- * @version     4.0.0
+ * @version     1.0.0
  * @package     WooCommerce\Classes\Payment
  */
 class WC_Gateway_OVO extends WC_Payment_Gateway
@@ -158,7 +158,7 @@ class WC_Gateway_OVO extends WC_Payment_Gateway
         // Get sortcode label in the $locale array and use appropriate one.
         $sortcode = isset($locale[$country]['sortcode']['label']) ? $locale[$country]['sortcode']['label'] : __('Kode Cabang', 'indobe-for-woocommerce');
 
-        ?>
+?>
         <tr valign="top">
             <th scope="row" class="titledesc">
                 <label>
@@ -181,12 +181,12 @@ class WC_Gateway_OVO extends WC_Payment_Gateway
                         </thead>
                         <tbody class="accounts">
                             <?php
-                                    $i = -1;
-        if ($this->account_details) {
-            foreach ($this->account_details as $account) {
-                ++$i;
+                            $i = -1;
+                            if ($this->account_details) {
+                                foreach ($this->account_details as $account) {
+                                    ++$i;
 
-                echo '<tr class="account">
+                                    echo '<tr class="account">
 										<td class="sort"></td>
 										<td><input type="text" value="' . esc_attr(wp_unslash($account['account_name'])) . '" name="ovo_account_name[' . esc_attr($i) . ']" /></td>
 										<td><input type="text" value="' . esc_attr($account['account_number']) . '" name="ovo_account_number[' . esc_attr($i) . ']" /></td>
@@ -194,9 +194,9 @@ class WC_Gateway_OVO extends WC_Payment_Gateway
 										<td><input type="text" value="' . esc_attr($account['iban']) . '" name="ovo_iban[' . esc_attr($i) . ']" /></td>
 										<td><input type="text" value="' . esc_attr($account['bic']) . '" name="ovo_bic[' . esc_attr($i) . ']" /></td>
 									</tr>';
-            }
-        }
-        ?>
+                                }
+                            }
+                            ?>
                         </tbody>
                         <tfoot>
                             <tr>
@@ -204,7 +204,8 @@ class WC_Gateway_OVO extends WC_Payment_Gateway
                             </tr>
                         </tfoot>
                     </table>
-                </div></td>
+                </div>
+            </td>
         </tr>
 <?php
         return ob_get_clean();

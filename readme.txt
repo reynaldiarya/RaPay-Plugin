@@ -5,7 +5,7 @@ Tags: woocommerce, payment, method, gateway, indonesia
 Requires at least: 6.0
 Requires PHP: 7.4
 Tested up to: 6.9
-Stable tag: 4.0.0
+Stable tag: 1.0.0
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -43,7 +43,7 @@ By default, WooCommerce only provides a generic bank transfer option. This plugi
 No. This is a Direct Bank Transfer (BACS) extender. It displays the bank account details and adds a unique code to the total. You must manually check your bank account (mutation) to confirm the funds have been received before processing the order.
 
 = Does it support the new WooCommerce Checkout Blocks? =
-Yes, as of version 4.0.0, this plugin supports the block-based Checkout and Cart pages.
+Yes, as of version 1.0.0, this plugin supports the block-based Checkout and Cart pages.
 
 = Can I change the unique code range? =
 Yes, you can configure the minimum and maximum range for the unique random code in the settings.
@@ -54,11 +54,11 @@ Yes, you can configure the minimum and maximum range for the unique random code 
 3.  **Unique Code Settings:** Configuration for the random payment code generation.
 
 == Upgrade Notice ==
-= 4.0.0 =
+= 1.0.0 =
 Major update: Added support for High-Performance Order Storage (HPOS) and WooCommerce Cart/Checkout Blocks. Please test on a staging site before updating on production.
 
 == Changelog ==
-= 4.0.0 - December 17, 2025 =
+= 1.0.0 - December 17, 2025 =
 * Compatibility: WooCommerce 10.4 and WordPress 6.9
 * Added: HPOS (High-Performance Order Storage) support
 * Added: Cart/Checkout Blocks support for block-based checkout
