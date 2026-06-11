@@ -1,0 +1,14 @@
+.github/
+.git/
+
+/vendor/
+.php-cs-fixer.php
+.php-cs-fixer.cache
+
+composer.json
+composer.lock
+
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
