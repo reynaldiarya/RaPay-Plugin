@@ -8,7 +8,7 @@
 
 use Automattic\WooCommerce\Enums\OrderStatus;
 
-if (! defined('ABSPATH')) {
+if (!defined('ABSPATH')) {
     exit; // Exit if accessed directly.
 }
 
@@ -18,8 +18,11 @@ if (! defined('ABSPATH')) {
  * Provides a Bank BTN Payment Gateway. Based on standard WooCommerce BACS.
  *
  * @class       WC_Gateway_BTN
+ *
  * @extends     WC_Payment_Gateway
+ *
  * @version     1.0.0
+ *
  * @package     WooCommerce\Classes\Payment
  */
 class WC_Gateway_BTN extends WC_Payment_Gateway
@@ -57,12 +60,11 @@ class WC_Gateway_BTN extends WC_Payment_Gateway
      */
     public function __construct()
     {
-        $this->id                 = self::ID;
-        $show_icon = 'yes' === $this->get_option('enable_icon', 'yes');
-        $icon_url = $show_icon ? plugins_url('assets/logo-btn.png', __FILE__) : '';
-        $this->icon               = apply_filters('indobe_bank_btn_icon', $icon_url);
-        $this->has_fields         = false;
-        $this->method_title       = __('Bank BTN', 'indobe-for-woocommerce');
+        $this->id = self::ID;
+        $icon_url = plugins_url('assets/logo-btn.png', __FILE__);
+        $this->icon = apply_filters('indobe_bank_btn_icon', $icon_url);
+        $this->has_fields = false;
+        $this->method_title = __('Bank BTN', 'indobe-for-woocommerce');
         $this->method_description = __('Lakukan pembayaran melalui transfer langsung ke rekening Bank BTN.', 'indobe-for-woocommerce');
 
         // Load the settings.
@@ -70,31 +72,31 @@ class WC_Gateway_BTN extends WC_Payment_Gateway
         $this->init_settings();
 
         // Define user set variables.
-        $this->title        = $this->get_option('title');
-        $this->description  = $this->get_option('description');
+        $this->title = $this->get_option('title');
+        $this->description = $this->get_option('description');
         $this->instructions = $this->get_option('instructions');
 
         // Bank BTN account fields shown on the thanks page and in emails.
         $this->account_details = get_option(
             'indobe_bank_btn_accounts',
-            array(
-                array(
+            [
+                [
                     'account_name'   => $this->get_option('account_name'),
                     'account_number' => $this->get_option('account_number'),
                     'sort_code'      => $this->get_option('sort_code'),
                     'iban'           => $this->get_option('iban'),
                     'bic'            => $this->get_option('bic'),
-                ),
-            )
+                ],
+            ]
         );
 
         // Actions.
-        add_action('woocommerce_update_options_payment_gateways_' . $this->id, array($this, 'process_admin_options'));
-        add_action('woocommerce_update_options_payment_gateways_' . $this->id, array($this, 'save_account_details'));
-        add_action('woocommerce_thankyou_' . $this->id, array($this, 'thankyou_page'));
+        add_action('woocommerce_update_options_payment_gateways_' . $this->id, [$this, 'process_admin_options']);
+        add_action('woocommerce_update_options_payment_gateways_' . $this->id, [$this, 'save_account_details']);
+        add_action('woocommerce_thankyou_' . $this->id, [$this, 'thankyou_page']);
 
         // Customer Emails.
-        add_action('woocommerce_email_before_order_table', array($this, 'email_instructions'), 10, 3);
+        add_action('woocommerce_email_before_order_table', [$this, 'email_instructions'], 10, 3);
     }
 
     /**
@@ -102,45 +104,45 @@ class WC_Gateway_BTN extends WC_Payment_Gateway
      */
     public function init_form_fields()
     {
-        $this->form_fields = array(
-            'enabled'         => array(
+        $this->form_fields = [
+            'enabled' => [
                 'title'   => __('Enable/Disable', 'indobe-for-woocommerce'),
                 'type'    => 'checkbox',
                 'label'   => __('Enable Bank BTN', 'indobe-for-woocommerce'),
                 'default' => 'no',
-            ),
-            'title'           => array(
+            ],
+            'title' => [
                 'title'       => __('Title', 'indobe-for-woocommerce'),
                 'type'        => 'safe_text',
                 'description' => __('Mengatur judul yang dilihat pengguna selama proses checkout.', 'indobe-for-woocommerce'),
                 'default'     => __('Transfer Bank BTN', 'indobe-for-woocommerce'),
                 'desc_tip'    => true,
-            ),
-            'enable_icon' => array(
-                'title'         => __('Icon', 'indobe-for-woocommerce'),
-                'label'         => __('Enable Icon', 'indobe-for-woocommerce'),
-                'type'          => 'checkbox',
-                'description'   => '<img src="' . plugins_url('assets/logo-btn.png', __FILE__) . '" style="height:100%;max-height:32px !important" />',
-                'default'       => 'no',
-            ),
-            'description'     => array(
+            ],
+            'enable_icon' => [
+                'title'       => __('Icon', 'indobe-for-woocommerce'),
+                'label'       => __('Enable Icon', 'indobe-for-woocommerce'),
+                'type'        => 'checkbox',
+                'description' => '<img src="' . plugins_url('assets/logo-btn.png', __FILE__) . '" style="height:100%;max-height:32px !important" />',
+                'default'     => 'no',
+            ],
+            'description' => [
                 'title'       => __('Description', 'indobe-for-woocommerce'),
                 'type'        => 'textarea',
                 'description' => __('Deskripsi metode pembayaran yang akan dilihat pelanggan pada halaman checkout Anda.', 'indobe-for-woocommerce'),
                 'default'     => __('Lakukan pembayaran langsung ke rekening Bank BTN kami. Mohon gunakan ID Pesanan Anda sebagai referensi pembayaran. Pesanan Anda tidak akan dikirimkan hingga dana telah masuk ke rekening kami.', 'indobe-for-woocommerce'),
                 'desc_tip'    => true,
-            ),
-            'instructions'    => array(
+            ],
+            'instructions' => [
                 'title'       => __('Instructions', 'indobe-for-woocommerce'),
                 'type'        => 'textarea',
                 'description' => __('Petunjuk yang akan ditambahkan ke halaman ucapan terima kasih dan email.', 'indobe-for-woocommerce'),
                 'default'     => '',
                 'desc_tip'    => true,
-            ),
-            'account_details' => array(
+            ],
+            'account_details' => [
                 'type' => 'account_details',
-            ),
-        );
+            ],
+        ];
     }
 
     /**
@@ -153,7 +155,7 @@ class WC_Gateway_BTN extends WC_Payment_Gateway
         ob_start();
 
         $country = WC()->countries->get_base_country();
-        $locale  = $this->get_country_locale();
+        $locale = $this->get_country_locale();
 
         // Get sortcode label in the $locale array and use appropriate one.
         $sortcode = isset($locale[$country]['sortcode']['label']) ? $locale[$country]['sortcode']['label'] : __('Kode Cabang', 'indobe-for-woocommerce');
@@ -182,6 +184,7 @@ class WC_Gateway_BTN extends WC_Payment_Gateway
                         <tbody class="accounts">
                             <?php
                                     $i = -1;
+
         if ($this->account_details) {
             foreach ($this->account_details as $account) {
                 ++$i;
@@ -216,36 +219,36 @@ class WC_Gateway_BTN extends WC_Payment_Gateway
      */
     public function save_account_details()
     {
-        $accounts = array();
+        $accounts = [];
 
         // phpcs:disable WordPress.Security.NonceVerification.Missing -- Nonce verification already handled in WC_Admin_Settings::save()
         if (
             isset($_POST['bank_btn_account_name']) && isset($_POST['bank_btn_account_number'])
             && isset($_POST['bank_btn_sort_code']) && isset($_POST['bank_btn_iban']) && isset($_POST['bank_btn_bic'])
         ) {
-            $account_names   = wc_clean(wp_unslash($_POST['bank_btn_account_name']));
+            $account_names = wc_clean(wp_unslash($_POST['bank_btn_account_name']));
             $account_numbers = wc_clean(wp_unslash($_POST['bank_btn_account_number']));
-            $sort_codes      = wc_clean(wp_unslash($_POST['bank_btn_sort_code']));
-            $ibans           = wc_clean(wp_unslash($_POST['bank_btn_iban']));
-            $bics            = wc_clean(wp_unslash($_POST['bank_btn_bic']));
+            $sort_codes = wc_clean(wp_unslash($_POST['bank_btn_sort_code']));
+            $ibans = wc_clean(wp_unslash($_POST['bank_btn_iban']));
+            $bics = wc_clean(wp_unslash($_POST['bank_btn_bic']));
 
             foreach ($account_names as $i => $name) {
-                if (! isset($account_names[$i])) {
+                if (!isset($account_names[$i])) {
                     continue;
                 }
 
-                $accounts[] = array(
+                $accounts[] = [
                     'account_name'   => $account_names[$i],
                     'account_number' => $account_numbers[$i],
                     'sort_code'      => $sort_codes[$i],
                     'iban'           => $ibans[$i],
                     'bic'            => $bics[$i],
-                );
+                ];
             }
         }
         // phpcs:enable
 
-        do_action('woocommerce_update_option', array('id' => 'indobe_bank_btn_accounts'));
+        do_action('woocommerce_update_option', ['id' => 'indobe_bank_btn_accounts']);
         update_option('indobe_bank_btn_accounts', $accounts);
     }
 
@@ -265,13 +268,13 @@ class WC_Gateway_BTN extends WC_Payment_Gateway
     /**
      * Add content to the WC emails.
      *
-     * @param WC_Order $order Order object.
+     * @param WC_Order $order         Order object.
      * @param bool     $sent_to_admin Sent to admin.
-     * @param bool     $plain_text Email format: plain text or HTML.
+     * @param bool     $plain_text    Email format: plain text or HTML.
      */
     public function email_instructions($order, $sent_to_admin, $plain_text = false)
     {
-        if (! $sent_to_admin && self::ID === $order->get_payment_method()) {
+        if (!$sent_to_admin && $order->get_payment_method() === self::ID) {
             /**
              * Filter the email instructions order status.
              *
@@ -281,6 +284,7 @@ class WC_Gateway_BTN extends WC_Payment_Gateway
              * @param object $order The order object.
              */
             $instructions_order_status = apply_filters('indobe_bank_btn_email_instructions_order_status', OrderStatus::ON_HOLD, $order);
+
             if ($order->has_status($instructions_order_status)) {
                 if ($this->instructions) {
                     echo wp_kses_post(wpautop(wptexturize($this->instructions)) . PHP_EOL);
@@ -306,16 +310,16 @@ class WC_Gateway_BTN extends WC_Payment_Gateway
 
         // Get the order country and country $locale.
         $country = $order->get_billing_country();
-        $locale  = $this->get_country_locale();
+        $locale = $this->get_country_locale();
 
         // Get sortcode label in the $locale array and use appropriate one.
         $sortcode = isset($locale[$country]['sortcode']['label']) ? $locale[$country]['sortcode']['label'] : __('Kode Cabang', 'indobe-for-woocommerce');
 
         $bank_btn_accounts = apply_filters('indobe_bank_btn_accounts', $this->account_details, $order_id);
 
-        if (! empty($bank_btn_accounts)) {
+        if (!empty($bank_btn_accounts)) {
             $account_html = '';
-            $has_details  = false;
+            $has_details = false;
 
             foreach ($bank_btn_accounts as $bank_btn_account) {
                 $bank_btn_account = (object) $bank_btn_account;
@@ -329,31 +333,31 @@ class WC_Gateway_BTN extends WC_Payment_Gateway
                 // Bank BTN account fields shown on the thanks page and in emails.
                 $account_fields = apply_filters(
                     'indobe_bank_btn_account_fields',
-                    array(
-                        'account_number' => array(
+                    [
+                        'account_number' => [
                             'label' => __('Nomor Rekening', 'indobe-for-woocommerce'),
                             'value' => $bank_btn_account->account_number,
-                        ),
-                        'sort_code'      => array(
+                        ],
+                        'sort_code' => [
                             'label' => $sortcode,
                             'value' => $bank_btn_account->sort_code,
-                        ),
-                        'iban'           => array(
+                        ],
+                        'iban' => [
                             'label' => __('IBAN', 'indobe-for-woocommerce'),
                             'value' => $bank_btn_account->iban,
-                        ),
-                        'bic'            => array(
+                        ],
+                        'bic' => [
                             'label' => __('BIC', 'indobe-for-woocommerce'),
                             'value' => $bank_btn_account->bic,
-                        ),
-                    ),
+                        ],
+                    ],
                     $order_id
                 );
 
                 foreach ($account_fields as $field_key => $field) {
-                    if (! empty($field['value'])) {
+                    if (!empty($field['value'])) {
                         $account_html .= '<li class="' . esc_attr($field_key) . '">' . wp_kses_post($field['label']) . ': <strong>' . wp_kses_post(wptexturize($field['value'])) . '</strong></li>' . PHP_EOL;
-                        $has_details   = true;
+                        $has_details = true;
                     }
                 }
 
@@ -370,6 +374,7 @@ class WC_Gateway_BTN extends WC_Payment_Gateway
      * Process the payment and return the result.
      *
      * @param int $order_id Order ID.
+     *
      * @return array
      */
     public function process_payment($order_id)
@@ -396,10 +401,10 @@ class WC_Gateway_BTN extends WC_Payment_Gateway
         WC()->cart->empty_cart();
 
         // Return thankyou redirect.
-        return array(
+        return [
             'result'   => 'success',
             'redirect' => $this->get_return_url($order),
-        );
+        ];
     }
 
     /**
@@ -413,48 +418,48 @@ class WC_Gateway_BTN extends WC_Payment_Gateway
             // Locale information to be used - only those that are not 'Sort Code'.
             $this->locale = apply_filters(
                 'woocommerce_get_bank_btn_locale',
-                array(
-                    'AU' => array(
-                        'sortcode' => array(
+                [
+                    'AU' => [
+                        'sortcode' => [
                             'label' => __('BSB', 'indobe-for-woocommerce'),
-                        ),
-                    ),
-                    'CA' => array(
-                        'sortcode' => array(
+                        ],
+                    ],
+                    'CA' => [
+                        'sortcode' => [
                             'label' => __('Bank transit number', 'indobe-for-woocommerce'),
-                        ),
-                    ),
-                    'IN' => array(
-                        'sortcode' => array(
+                        ],
+                    ],
+                    'IN' => [
+                        'sortcode' => [
                             'label' => __('IFSC', 'indobe-for-woocommerce'),
-                        ),
-                    ),
-                    'IT' => array(
-                        'sortcode' => array(
+                        ],
+                    ],
+                    'IT' => [
+                        'sortcode' => [
                             'label' => __('Branch sort', 'indobe-for-woocommerce'),
-                        ),
-                    ),
-                    'NZ' => array(
-                        'sortcode' => array(
+                        ],
+                    ],
+                    'NZ' => [
+                        'sortcode' => [
                             'label' => __('Bank code', 'indobe-for-woocommerce'),
-                        ),
-                    ),
-                    'SE' => array(
-                        'sortcode' => array(
+                        ],
+                    ],
+                    'SE' => [
+                        'sortcode' => [
                             'label' => __('Bank code', 'indobe-for-woocommerce'),
-                        ),
-                    ),
-                    'US' => array(
-                        'sortcode' => array(
+                        ],
+                    ],
+                    'US' => [
+                        'sortcode' => [
                             'label' => __('Routing number', 'indobe-for-woocommerce'),
-                        ),
-                    ),
-                    'ZA' => array(
-                        'sortcode' => array(
+                        ],
+                    ],
+                    'ZA' => [
+                        'sortcode' => [
                             'label' => __('Branch code', 'indobe-for-woocommerce'),
-                        ),
-                    ),
-                )
+                        ],
+                    ],
+                ]
             );
         }
 

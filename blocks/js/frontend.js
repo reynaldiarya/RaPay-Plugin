@@ -4,7 +4,7 @@
   const { registerPaymentMethod } = window.wc.wcBlocksRegistry;
   const { decodeEntities } = window.wp.htmlEntities;
   const { getSetting } = window.wc.wcSettings;
-  const { createElement } = window.wp.element;
+  const { createElement, RawHTML } = window.wp.element;
 
   // All Indobe gateway IDs
   const indobeGateways = [
@@ -54,8 +54,6 @@
 
     // Label component
     const Label = (props) => {
-      const { PaymentMethodLabel } = props.components;
-
       if (icon) {
         return createElement(
           "span",
@@ -69,12 +67,12 @@
         );
       }
 
-      return createElement(PaymentMethodLabel, { text: title });
+      return createElement("span", null, title);
     };
 
     // Content component
     const Content = () => {
-      return createElement("div", null, description);
+      return createElement(RawHTML, null, description);
     };
 
     // Register the payment method
