@@ -2,5 +2,5 @@
 
 return [
     'dependencies' => ['wc-blocks-registry', 'wc-settings', 'wp-element', 'wp-html-entities'],
-    'version' => '1.0.0',
+    'version'      => '1.0.1',
 ];

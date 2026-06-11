@@ -4,8 +4,8 @@ Donate link: https://trakteer.id/reynaldiarya/tip
 Tags: woocommerce, payment, method, gateway, indonesia
 Requires at least: 6.0
 Requires PHP: 7.4
-Tested up to: 6.9
-Stable tag: 1.0.0
+Tested up to: 7.0
+Stable tag: 1.0.1
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 

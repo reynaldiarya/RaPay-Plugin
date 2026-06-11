@@ -1,5 +1,9 @@
 <?php
 
+if (!defined('ABSPATH')) {
+    exit; // Exit if accessed directly
+}
+
 /**
  * Indobe Blocks Support
  *
@@ -52,13 +56,14 @@ final class Indobe_Blocks_Support extends AbstractPaymentMethodType
     /**
      * Returns if this payment method should be active.
      *
-     * @return boolean
+     * @return bool
      */
     public function is_active()
     {
         if (!$this->gateway) {
             return false;
         }
+
         return $this->gateway->is_available();
     }
 
@@ -98,11 +103,13 @@ final class Indobe_Blocks_Support extends AbstractPaymentMethodType
             return [];
         }
 
+        $show_icon = $this->gateway->get_option('enable_icon', 'yes') === 'yes';
+
         return [
             'name'        => $this->name,
             'title'       => $this->gateway->get_title(),
             'description' => $this->gateway->get_description(),
-            'icon'        => $this->gateway->icon ?? '',
+            'icon'        => $show_icon ? ($this->gateway->icon ?? '') : '',
             'supports'    => $this->get_supported_features(),
         ];
     }
