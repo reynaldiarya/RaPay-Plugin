@@ -108,7 +108,7 @@ final class Indobe_Blocks_Support extends AbstractPaymentMethodType
         return [
             'name'        => $this->name,
             'title'       => $this->gateway->get_title(),
-            'description' => $this->gateway->get_description(),
+            'description' => wp_kses_post($this->gateway->get_description()),
             'icon'        => $show_icon ? ($this->gateway->icon ?? '') : '',
             'supports'    => $this->get_supported_features(),
         ];
