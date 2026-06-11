@@ -58,8 +58,7 @@ class WC_Gateway_TMRW extends WC_Payment_Gateway
     public function __construct()
     {
         $this->id                 = self::ID;
-        $show_icon = 'yes' === $this->get_option('enable_icon', 'yes');
-        $icon_url = $show_icon ? plugins_url('assets/logo-tmrw.png', __FILE__) : '';
+        $icon_url = plugins_url('assets/logo-tmrw.png', __FILE__);
         $this->icon               = apply_filters('indobe_bank_tmrw_icon', $icon_url);
         $this->has_fields         = false;
         $this->method_title       = __('Bank TMRW', 'indobe-for-woocommerce');

@@ -58,8 +58,7 @@ class WC_Gateway_LinkAja extends WC_Payment_Gateway
     public function __construct()
     {
         $this->id                 = self::ID;
-        $show_icon = 'yes' === $this->get_option('enable_icon', 'yes');
-        $icon_url = $show_icon ? plugins_url('assets/logo-linkaja.png', __FILE__) : '';
+        $icon_url = plugins_url('assets/logo-linkaja.png', __FILE__);
         $this->icon               = apply_filters('indobe_linkaja_icon', $icon_url);
         $this->has_fields         = false;
         $this->method_title       = __('LinkAja', 'indobe-for-woocommerce');

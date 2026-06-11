@@ -58,8 +58,7 @@ class WC_Gateway_QRIS extends WC_Payment_Gateway
     public function __construct()
     {
         $this->id                 = self::ID;
-        $show_icon = 'yes' === $this->get_option('enable_icon', 'yes');
-        $icon_url = $show_icon ? plugins_url('assets/logo-qris.png', __FILE__) : '';
+        $icon_url = plugins_url('assets/logo-qris.png', __FILE__);
         $this->icon               = apply_filters('indobe_qris_icon', $icon_url);
         $this->has_fields         = false;
         $this->method_title       = __('QRIS', 'indobe-for-woocommerce');
@@ -107,7 +106,7 @@ class WC_Gateway_QRIS extends WC_Payment_Gateway
                 'label'         => __('Enable Icon', 'indobe-for-woocommerce'),
                 'type'          => 'checkbox',
                 'description'   => '<img src="' . plugins_url('assets/logo-qris.png', __FILE__) . '" style="height:100%;max-height:32px !important" />',
-                'default'       => 'yes',
+                'default'       => 'no',
             ),
             'description'     => array(
                 'title'       => __('Description', 'indobe-for-woocommerce'),
