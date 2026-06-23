@@ -1,93 +1,95 @@
 <?php
 
-$finder = PhpCsFixer\Finder::create()
-    ->in(__DIR__)
-    ->exclude(['vendor', 'node_modules'])
+declare(strict_types=1);
+
+use PhpCsFixer\Config;
+use PhpCsFixer\Finder;
+
+$finder = Finder::create()
+    ->in([
+        __DIR__ . '/bank',
+        __DIR__ . '/blocks',
+        __DIR__ . '/e-money',
+    ])
+    ->append([
+        __DIR__ . '/indobe-for-woocommerce.php',
+    ])
+    ->exclude([
+        'vendor',
+        '.git',
+        '.idea',
+    ])
     ->name('*.php')
     ->ignoreDotFiles(true)
     ->ignoreVCS(true);
 
-$config = new PhpCsFixer\Config();
-
-return $config
-    ->setRiskyAllowed(true) // Required for some rules like 'array_syntax' short
+return (new Config())
+    ->setRiskyAllowed(true)
+    ->setFinder($finder)
     ->setRules([
-        // Use PSR-12 standard as the baseline
         '@PSR12' => true,
-        
-        // --- ARRAY & LIST ---
-        'array_syntax' => ['syntax' => 'short'], // Force the use of [] instead of array()
-        'trim_array_spaces' => true,
-        'no_whitespace_before_comma_in_array' => true,
-        'whitespace_after_comma_in_array' => true,
-        'trailing_comma_in_multiline' => ['elements' => ['arrays']], // Trailing comma at the end of multiline arrays
+        '@PHP83Migration' => true,
 
-        // --- SPACING & WHITESPACE CLEANUP ---
+        'declare_strict_types' => true,
+
+        'array_indentation' => true,
+        'trim_array_spaces' => true,
+        'trailing_comma_in_multiline' => [
+            'elements' => [
+                'arrays',
+                'arguments',
+                'parameters',
+                'match',
+            ],
+        ],
+
+        'ordered_imports' => [
+            'sort_algorithm' => 'alpha',
+        ],
+        'single_import_per_statement' => true,
+        'no_unused_imports' => true,
+
         'no_trailing_whitespace' => true,
         'no_whitespace_in_blank_line' => true,
+        'single_blank_line_at_eof' => true,
+        'blank_line_after_opening_tag' => true,
+        'blank_line_after_namespace' => true,
+
         'no_extra_blank_lines' => [
             'tokens' => [
-                'extra',
-                'curly_brace_block',
-                'parenthesis_brace_block',
-                'square_brace_block',
-                'use',
-                'throw',
-                'return',
-                'continue',
                 'break',
-            ]
+                'continue',
+                'return',
+                'throw',
+                'use',
+            ],
         ],
-        'blank_line_before_statement' => [
-            'statements' => ['return', 'throw', 'try', 'while', 'for', 'foreach', 'do', 'if', 'switch']
+
+        'class_attributes_separation' => [
+            'elements' => [
+                'method' => 'one',
+                'property' => 'one',
+                'trait_import' => 'none',
+            ],
         ],
-        'single_blank_line_at_eof' => true,
 
-        // --- IMPORTS (USE STATEMENTS) ---
-        'ordered_imports' => ['sort_algorithm' => 'alpha'],
-        'no_unused_imports' => true,
-        'single_line_after_imports' => true,
-        'fully_qualified_strict_types' => true,
+        'function_declaration' => true,
+        'single_line_empty_body' => true,
 
-        // --- OPERATORS & CONDITIONALS ---
-        'concat_space' => ['spacing' => 'one'], // Force a single space for string concatenation (e.g., 'a' . 'b')
         'binary_operator_spaces' => [
             'default' => 'single_space',
-            'operators' => [
-                '=>' => 'align_single_space_minimal', // Align key => value indentation in arrays
-            ]
         ],
-        'unary_operator_spaces' => true,
-        'object_operator_without_whitespace' => true,
-        'ternary_operator_spaces' => true,
-        'standardize_not_equals' => true, // Convert <> to !=
-        'yoda_style' => [
-            'equal' => false,
-            'identical' => false,
-            'less_and_greater' => false
-        ], // Disable Yoda style (changes `if (true === $a)` to `if ($a === true)`)
 
-        // --- PHPDOC ---
-        'phpdoc_align' => ['align' => 'vertical'], // Align @param, @var, etc.
-        'phpdoc_indent' => true,
-        'phpdoc_no_empty_return' => true,
-        'phpdoc_order' => true,
+        'single_quote' => true,
+
+        'phpdoc_align' => true,
+        'phpdoc_trim' => true,
         'phpdoc_scalar' => true,
         'phpdoc_separation' => true,
-        'phpdoc_single_line_var_spacing' => true,
-        'phpdoc_trim' => true,
-        'phpdoc_types' => true,
-        'no_empty_phpdoc' => true,
-
-        // --- FUNCTIONS & CLASSES ---
-        'function_typehint_space' => true,
-        'visibility_required' => [
-            'elements' => ['property', 'method', 'const']
+        'phpdoc_summary' => false,
+        'phpdoc_types_order' => [
+            'null_adjustment' => 'always_last',
         ],
-        'single_trait_insert_per_statement' => true,
-        
-        // --- PHP TAGS ---
-        'full_opening_tag' => true,
-        'no_closing_tag' => true, // Remove closing tag at the end of pure PHP files (prevents whitespace leakage)
-    ])
-    ->setFinder($finder);
+
+        'no_closing_tag' => false,
+    ]);
