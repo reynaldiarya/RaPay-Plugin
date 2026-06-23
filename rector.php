@@ -14,8 +14,8 @@ return RectorConfig::configure()
         __DIR__ . '/e-money',
     ])
     ->withBootstrapFiles([
-        __DIR__ . 'vendor/php-stubs/wordpress-stubs/wordpress-stubs.php',
-        __DIR__ . 'vendor/php-stubs/woocommerce-stubs/woocommerce-stubs.php',
+        __DIR__ . '/vendor/php-stubs/wordpress-stubs/wordpress-stubs.php',
+        __DIR__ . '/vendor/php-stubs/woocommerce-stubs/woocommerce-stubs.php',
     ])
     ->withPhpVersion(PhpVersion::PHP_81)
     ->withSets([
