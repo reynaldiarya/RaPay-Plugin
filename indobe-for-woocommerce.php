@@ -4,7 +4,7 @@
  * Plugin Name:       Indobe - Bank dan e-Money Indonesia
  * Plugin URI:        https://wordpress.org/plugins/indobe-for-woocommerce
  * Description:       Plugin Pembayaran Bank dan e-Money Indonesia untuk WooCommerce. Mendukung kode unik pembayaran.
- * Version:           1.0.1
+ * Version:           1.0.2
  * Author:            Reynaldi Arya
  * Author URI:        https://reynaldiab.com
  * Requires at least: 6.0

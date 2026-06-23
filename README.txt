@@ -5,7 +5,7 @@ Tags: woocommerce, payment, method, gateway, indonesia
 Requires at least: 6.0
 Requires PHP: 8.1
 Tested up to: 7.0
-Stable tag: 1.0.1
+Stable tag: 1.0.2
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -54,6 +54,9 @@ Yes, you can configure the minimum and maximum range for the unique random code 
 3.  **Unique Code Settings:** Configuration for the random payment code generation.
 
 == Upgrade Notice ==
+= 1.0.2 =
+Codebase modernization and development toolset improvements.
+
 = 1.0.1 =
 Security, compatibility, and UI fixes. Highly recommended to update!
 
@@ -61,6 +64,12 @@ Security, compatibility, and UI fixes. Highly recommended to update!
 Initial release with HPOS and WooCommerce Cart/Checkout Blocks support.
 
 == Changelog ==
+= 1.0.2 - June 23, 2026 =
+* Dev: Modernized gateways with added return type hints, first-class callables, and consistent code formatting.
+* Dev: Added and configured PHPStan for static analysis.
+* Dev: Added and updated Rector for automated code refactoring.
+* Dev: Updated `.gitattributes` for better repository management.
+
 = 1.0.1 - June 11, 2026 =
 * Fix: Payment gateway icons now correctly display in the WooCommerce Admin dashboard even when disabled for the frontend checkout.
 * Security: Added `ABSPATH` direct access prevention check to the block integration module.

@@ -21,7 +21,7 @@ if (!defined('ABSPATH')) {
  *
  * @extends     WC_Payment_Gateway
  *
- * @version     1.0.1
+ * @version     1.0.2
  *
  * @package     WooCommerce\Classes\Payment
  */
