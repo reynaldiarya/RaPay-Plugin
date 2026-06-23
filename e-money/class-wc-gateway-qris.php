@@ -78,59 +78,59 @@ class WC_Gateway_QRIS extends WC_Payment_Gateway
         $this->qr_code = $this->get_option('qr_code');
 
         // Actions.
-        add_action('woocommerce_update_options_payment_gateways_' . $this->id, [$this, 'process_admin_options']);
-        add_action('woocommerce_thankyou_' . $this->id, [$this, 'thankyou_page']);
+        add_action('woocommerce_update_options_payment_gateways_' . $this->id, $this->process_admin_options(...));
+        add_action('woocommerce_thankyou_' . $this->id, $this->thankyou_page(...));
 
         // Customer Emails.
-        add_action('woocommerce_email_before_order_table', [$this, 'email_instructions'], 10, 3);
+        add_action('woocommerce_email_before_order_table', $this->email_instructions(...), 10, 3);
     }
 
     /**
      * Initialise Gateway Settings Form Fields.
      */
-    public function init_form_fields()
+    public function init_form_fields(): void
     {
         $this->form_fields = [
             'enabled' => [
-                'title'   => __('Enable/Disable', 'indobe-for-woocommerce'),
-                'type'    => 'checkbox',
-                'label'   => __('Enable QRIS', 'indobe-for-woocommerce'),
+                'title' => __('Enable/Disable', 'indobe-for-woocommerce'),
+                'type' => 'checkbox',
+                'label' => __('Enable QRIS', 'indobe-for-woocommerce'),
                 'default' => 'no',
             ],
             'title' => [
-                'title'       => __('Title', 'indobe-for-woocommerce'),
-                'type'        => 'safe_text',
+                'title' => __('Title', 'indobe-for-woocommerce'),
+                'type' => 'safe_text',
                 'description' => __('Mengatur judul yang dilihat pengguna selama proses checkout.', 'indobe-for-woocommerce'),
-                'default'     => __('Transfer QRIS', 'indobe-for-woocommerce'),
-                'desc_tip'    => true,
+                'default' => __('Transfer QRIS', 'indobe-for-woocommerce'),
+                'desc_tip' => true,
             ],
             'enable_icon' => [
-                'title'       => __('Icon', 'indobe-for-woocommerce'),
-                'label'       => __('Enable Icon', 'indobe-for-woocommerce'),
-                'type'        => 'checkbox',
+                'title' => __('Icon', 'indobe-for-woocommerce'),
+                'label' => __('Enable Icon', 'indobe-for-woocommerce'),
+                'type' => 'checkbox',
                 'description' => '<img src="' . plugins_url('assets/logo-qris.png', __FILE__) . '" style="height:100%;max-height:32px !important" />',
-                'default'     => 'no',
+                'default' => 'no',
             ],
             'description' => [
-                'title'       => __('Description', 'indobe-for-woocommerce'),
-                'type'        => 'textarea',
+                'title' => __('Description', 'indobe-for-woocommerce'),
+                'type' => 'textarea',
                 'description' => __('Deskripsi metode pembayaran yang akan dilihat pelanggan pada halaman checkout Anda.', 'indobe-for-woocommerce'),
-                'default'     => __('Lakukan pembayaran langsung ke rekening QRIS kami. Mohon gunakan ID Pesanan Anda sebagai referensi pembayaran. Pesanan Anda tidak akan dikirimkan hingga dana telah masuk ke rekening kami.', 'indobe-for-woocommerce'),
-                'desc_tip'    => true,
+                'default' => __('Lakukan pembayaran langsung ke rekening QRIS kami. Mohon gunakan ID Pesanan Anda sebagai referensi pembayaran. Pesanan Anda tidak akan dikirimkan hingga dana telah masuk ke rekening kami.', 'indobe-for-woocommerce'),
+                'desc_tip' => true,
             ],
             'instructions' => [
-                'title'       => __('Instructions', 'indobe-for-woocommerce'),
-                'type'        => 'textarea',
+                'title' => __('Instructions', 'indobe-for-woocommerce'),
+                'type' => 'textarea',
                 'description' => __('Petunjuk yang akan ditambahkan ke halaman ucapan terima kasih dan email.', 'indobe-for-woocommerce'),
-                'default'     => '',
-                'desc_tip'    => true,
+                'default' => '',
+                'desc_tip' => true,
             ],
             'qr_code' => [
-                'title'       => __('Link QRIS', 'indobe-for-woocommerce'),
-                'type'        => 'text',
+                'title' => __('Link QRIS', 'indobe-for-woocommerce'),
+                'type' => 'text',
                 'description' => __('Masukkan Link QRIS.', 'indobe-for-woocommerce'),
-                'default'     => '',
-                'desc_tip'    => true,
+                'default' => '',
+                'desc_tip' => true,
             ],
         ];
     }
@@ -140,7 +140,7 @@ class WC_Gateway_QRIS extends WC_Payment_Gateway
      *
      * @param int $order_id Order ID.
      */
-    public function thankyou_page($order_id)
+    public function thankyou_page($order_id): void
     {
         if ($this->instructions) {
             echo wp_kses_post(wpautop(wptexturize(wp_kses_post($this->instructions))));
@@ -155,7 +155,7 @@ class WC_Gateway_QRIS extends WC_Payment_Gateway
      * @param bool     $sent_to_admin Sent to admin.
      * @param bool     $plain_text    Email format: plain text or HTML.
      */
-    public function email_instructions($order, $sent_to_admin, $plain_text = false)
+    public function email_instructions($order, $sent_to_admin, $plain_text = false): void
     {
         if (!$sent_to_admin && $order->get_payment_method() === self::ID) {
             /**
@@ -182,13 +182,13 @@ class WC_Gateway_QRIS extends WC_Payment_Gateway
      *
      * @param int $order_id Order ID.
      */
-    private function bank_details($order_id = '')
+    private function bank_details($order_id = ''): void
     {
         if (empty($this->qr_code)) {
             return;
         }
 
-        if (isset($this->qr_code) && !empty($this->qr_code)) {
+        if ($this->qr_code !== null && !empty($this->qr_code)) {
             ?>
             <img src="<?php echo esc_url($this->qr_code); ?>" style="height:100%;max-height:500px;margin-bottom:35px !important" />
 <?php
@@ -227,7 +227,7 @@ class WC_Gateway_QRIS extends WC_Payment_Gateway
 
         // Return thankyou redirect.
         return [
-            'result'   => 'success',
+            'result' => 'success',
             'redirect' => $this->get_return_url($order),
         ];
     }

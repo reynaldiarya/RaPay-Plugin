@@ -34,37 +34,37 @@ use Automattic\WooCommerce\Utilities\FeaturesUtil;
 define('INDOBE_GATEWAYS', [
     // Bank
     'bank' => [
-        'bni'          => 'WC_Gateway_BNI',
-        'bca'          => 'WC_Gateway_BCA',
-        'bri'          => 'WC_Gateway_BRI',
-        'mandiri'      => 'WC_Gateway_Mandiri',
-        'jago'         => 'WC_Gateway_Jago',
-        'cimb-niaga'   => 'WC_Gateway_CIMB_Niaga',
-        'citibank'     => 'WC_Gateway_Citibank',
-        'digibank'     => 'WC_Gateway_Digibank',
-        'hsbc'         => 'WC_Gateway_HSBC',
-        'jenius'       => 'WC_Gateway_Jenius',
+        'bni' => 'WC_Gateway_BNI',
+        'bca' => 'WC_Gateway_BCA',
+        'bri' => 'WC_Gateway_BRI',
+        'mandiri' => 'WC_Gateway_Mandiri',
+        'jago' => 'WC_Gateway_Jago',
+        'cimb-niaga' => 'WC_Gateway_CIMB_Niaga',
+        'citibank' => 'WC_Gateway_Citibank',
+        'digibank' => 'WC_Gateway_Digibank',
+        'hsbc' => 'WC_Gateway_HSBC',
+        'jenius' => 'WC_Gateway_Jenius',
         'neo-commerce' => 'WC_Gateway_Neo_Commerce',
-        'danamon'      => 'WC_Gateway_Danamon',
-        'btn'          => 'WC_Gateway_BTN',
-        'bsi'          => 'WC_Gateway_BSI',
-        'permata'      => 'WC_Gateway_Permata',
-        'ocbc-nisp'    => 'WC_Gateway_OCBC_NISP',
-        'muamalat'     => 'WC_Gateway_Muamalat',
-        'tmrw'         => 'WC_Gateway_TMRW',
-        'line-bank'    => 'WC_Gateway_Line_Bank',
-        'seabank'      => 'WC_Gateway_Seabank',
-        'allo-bank'    => 'WC_Gateway_Allo_Bank',
-        'krom'         => 'WC_Gateway_Krom',
+        'danamon' => 'WC_Gateway_Danamon',
+        'btn' => 'WC_Gateway_BTN',
+        'bsi' => 'WC_Gateway_BSI',
+        'permata' => 'WC_Gateway_Permata',
+        'ocbc-nisp' => 'WC_Gateway_OCBC_NISP',
+        'muamalat' => 'WC_Gateway_Muamalat',
+        'tmrw' => 'WC_Gateway_TMRW',
+        'line-bank' => 'WC_Gateway_Line_Bank',
+        'seabank' => 'WC_Gateway_Seabank',
+        'allo-bank' => 'WC_Gateway_Allo_Bank',
+        'krom' => 'WC_Gateway_Krom',
     ],
     // E-Money
     'e-money' => [
-        'gopay'     => 'WC_Gateway_GoPay',
-        'ovo'       => 'WC_Gateway_OVO',
-        'dana'      => 'WC_Gateway_Dana',
-        'linkaja'   => 'WC_Gateway_LinkAja',
+        'gopay' => 'WC_Gateway_GoPay',
+        'ovo' => 'WC_Gateway_OVO',
+        'dana' => 'WC_Gateway_Dana',
+        'linkaja' => 'WC_Gateway_LinkAja',
         'shopeepay' => 'WC_Gateway_ShopeePay',
-        'qris'      => 'WC_Gateway_QRIS',
+        'qris' => 'WC_Gateway_QRIS',
     ],
 ]);
 
@@ -85,7 +85,7 @@ function indobe_get_gateway_classes(): array
 /**
  * 1. HPOS and Cart/Checkout Blocks Compatibility Statement
  */
-add_action('before_woocommerce_init', function () {
+add_action('before_woocommerce_init', function (): void {
     if (class_exists(FeaturesUtil::class)) {
         FeaturesUtil::declare_compatibility('custom_order_tables', __FILE__, true);
         FeaturesUtil::declare_compatibility('cart_checkout_blocks', __FILE__, true);
@@ -95,39 +95,39 @@ add_action('before_woocommerce_init', function () {
 /**
  * 2. Block Support Registration (Checkout Block)
  */
-add_action('woocommerce_blocks_loaded', function () {
+add_action('woocommerce_blocks_loaded', function (): void {
     if (!class_exists(AbstractPaymentMethodType::class)) {
         return;
     }
 
-    require_once dirname(__FILE__) . '/blocks/class-indobe-blocks-support.php';
+    require_once __DIR__ . '/blocks/class-indobe-blocks-support.php';
 
     add_action(
         'woocommerce_blocks_payment_method_type_registration',
-        function (PaymentMethodRegistry $payment_method_registry) {
+        function (PaymentMethodRegistry $payment_method_registry): void {
             $gateways = WC()->payment_gateways()->payment_gateways();
             $our_gateways = indobe_get_gateway_classes();
 
             foreach ($gateways as $gateway) {
-                if ($gateway instanceof WC_Payment_Gateway && strpos(get_class($gateway), 'WC_Gateway_') === 0) {
-                    $gateway_class = get_class($gateway);
+                if ($gateway instanceof WC_Payment_Gateway && str_starts_with($gateway::class, 'WC_Gateway_')) {
+                    $gateway_class = $gateway::class;
 
                     if (in_array($gateway_class, $our_gateways, true)) {
                         $payment_method_registry->register(new Indobe_Blocks_Support($gateway));
                     }
                 }
             }
-        }
+        },
     );
 });
 
 /**
  * 3. Plugin Initialization (Load Classes)
  */
-add_action('plugins_loaded', function () {
+add_action('plugins_loaded', function (): void {
     if (!class_exists('WooCommerce')) {
         // 1. Show Error Notification
-        add_action('admin_notices', function () {
+        add_action('admin_notices', function (): void {
             ?>
             <div class="notice notice-error is-dismissible">
                 <p>
@@ -160,7 +160,7 @@ add_action('plugins_loaded', function () {
     // Load Class Files berdasarkan INDOBE_GATEWAYS
     foreach (INDOBE_GATEWAYS as $type => $gateways) {
         foreach ($gateways as $file_slug => $class_name) {
-            $file = dirname(__FILE__) . '/' . $type . '/class-wc-gateway-' . $file_slug . '.php';
+            $file = __DIR__ . '/' . $type . '/class-wc-gateway-' . $file_slug . '.php';
 
             if (file_exists($file)) {
                 require_once $file;
@@ -187,7 +187,7 @@ add_filter('woocommerce_payment_gateways', function ($methods) {
  */
 add_filter('woocommerce_gateway_icon', function ($icon_html, $gateway_id) {
     // Berlaku hanya untuk gateway dari Indobe
-    $is_indobe_gateway = strpos($gateway_id, 'bank_') === 0 || in_array($gateway_id, ['gopay', 'ovo', 'dana', 'linkaja', 'shopeepay', 'qris'], true);
+    $is_indobe_gateway = str_starts_with((string) $gateway_id, 'bank_') || in_array($gateway_id, ['gopay', 'ovo', 'dana', 'linkaja', 'shopeepay', 'qris'], true);
 
     if ($is_indobe_gateway) {
         // Don't remove icon if in admin dashboard
@@ -224,7 +224,7 @@ add_filter('plugin_row_meta', function ($links, $plugin_file) {
 /**
  * 7. “Advanced” Tab Settings for Unique Codes
  */
-add_filter('woocommerce_get_sections_advanced', function ($sections) {
+add_filter('woocommerce_get_sections_advanced', function (array $sections): array {
     $sections['puc'] = __('Kode Pembayaran', 'indobe-for-woocommerce');
 
     return $sections;
@@ -232,53 +232,39 @@ add_filter('woocommerce_get_sections_advanced', function ($sections) {
 
 add_filter('woocommerce_get_settings_advanced', function ($settings, $current_section) {
     if ($current_section === 'puc') {
-        $settings_puc = [];
-
-        $settings_puc[] = [
+        return [[
             'name' => __('Pengaturan Kode Unik', 'indobe-for-woocommerce'),
             'type' => 'title',
             'desc' => __('Tambahkan 3 digit angka unik pada total pembayaran untuk mempermudah verifikasi transfer manual.', 'indobe-for-woocommerce'),
-            'id'   => 'puc_options',
-        ];
-
-        $settings_puc[] = [
-            'name'    => __('Aktifkan Kode Unik', 'indobe-for-woocommerce'),
-            'type'    => 'checkbox',
-            'desc'    => __('Ya, aktifkan penambahan kode unik otomatis.', 'indobe-for-woocommerce'),
-            'id'      => 'indobe_puc_enabled',
+            'id' => 'puc_options',
+        ], [
+            'name' => __('Aktifkan Kode Unik', 'indobe-for-woocommerce'),
+            'type' => 'checkbox',
+            'desc' => __('Ya, aktifkan penambahan kode unik otomatis.', 'indobe-for-woocommerce'),
+            'id' => 'indobe_puc_enabled',
             'default' => 'no',
-        ];
-
-        $settings_puc[] = [
-            'name'        => __('Label Kode Unik', 'indobe-for-woocommerce'),
-            'type'        => 'text',
-            'desc'        => __('Teks yang muncul di halaman checkout.', 'indobe-for-woocommerce'),
-            'id'          => 'indobe_puc_title',
-            'default'     => 'Kode Pembayaran',
+        ], [
+            'name' => __('Label Kode Unik', 'indobe-for-woocommerce'),
+            'type' => 'text',
+            'desc' => __('Teks yang muncul di halaman checkout.', 'indobe-for-woocommerce'),
+            'id' => 'indobe_puc_title',
+            'default' => 'Kode Pembayaran',
             'placeholder' => 'Kode Pembayaran',
-        ];
-
-        $settings_puc[] = [
-            'name'              => __('Angka Minimal', 'indobe-for-woocommerce'),
-            'type'              => 'number',
-            'desc'              => __('Batas bawah angka acak (Misal: 1).', 'indobe-for-woocommerce'),
-            'id'                => 'indobe_puc_min',
-            'default'           => '1',
+        ], [
+            'name' => __('Angka Minimal', 'indobe-for-woocommerce'),
+            'type' => 'number',
+            'desc' => __('Batas bawah angka acak (Misal: 1).', 'indobe-for-woocommerce'),
+            'id' => 'indobe_puc_min',
+            'default' => '1',
             'custom_attributes' => ['min' => 1],
-        ];
-
-        $settings_puc[] = [
-            'name'              => __('Angka Maksimal', 'indobe-for-woocommerce'),
-            'type'              => 'number',
-            'desc'              => __('Batas atas angka acak (Misal: 999).', 'indobe-for-woocommerce'),
-            'id'                => 'indobe_puc_max',
-            'default'           => '999',
+        ], [
+            'name' => __('Angka Maksimal', 'indobe-for-woocommerce'),
+            'type' => 'number',
+            'desc' => __('Batas atas angka acak (Misal: 999).', 'indobe-for-woocommerce'),
+            'id' => 'indobe_puc_max',
+            'default' => '999',
             'custom_attributes' => ['max' => 999],
-        ];
-
-        $settings_puc[] = ['type' => 'sectionend', 'id' => 'puc_options'];
-
-        return $settings_puc;
+        ], ['type' => 'sectionend', 'id' => 'puc_options']];
     }
 
     return $settings;
@@ -287,7 +273,7 @@ add_filter('woocommerce_get_settings_advanced', function ($settings, $current_se
 /**
  * 8. The Logic Behind the Unique Code Fee
  */
-add_action('woocommerce_cart_calculate_fees', function ($cart) {
+add_action('woocommerce_cart_calculate_fees', function ($cart): void {
     if (is_admin() && !defined('DOING_AJAX')) {
         return;
     }
@@ -309,7 +295,7 @@ add_action('woocommerce_cart_calculate_fees', function ($cart) {
     if (!$unique_code) {
         try {
             $unique_code = random_int($min, $max);
-        } catch (Exception $e) {
+        } catch (Exception) {
             $unique_code = wp_rand($min, $max); // Fallback
         }
         WC()->session->set('indobe_unique_code', $unique_code);
@@ -323,7 +309,7 @@ add_action('woocommerce_cart_calculate_fees', function ($cart) {
 /**
  * 9. Remove the Unique Code from the Session After Checkout
  */
-add_action('woocommerce_thankyou', function () {
+add_action('woocommerce_thankyou', function (): void {
     if (WC()->session) {
         WC()->session->__unset('indobe_unique_code');
     }

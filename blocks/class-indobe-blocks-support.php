@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 if (!defined('ABSPATH')) {
     exit; // Exit if accessed directly
 }
@@ -17,6 +19,7 @@ use Automattic\WooCommerce\Blocks\Payments\Integrations\AbstractPaymentMethodTyp
  */
 final class Indobe_Blocks_Support extends AbstractPaymentMethodType
 {
+    private string $script_handle;
     /**
      * Payment method name/id
      *
@@ -48,7 +51,7 @@ final class Indobe_Blocks_Support extends AbstractPaymentMethodType
     /**
      * Initializes the payment method type.
      */
-    public function initialize()
+    public function initialize(): void
     {
         $this->settings = get_option('woocommerce_' . $this->name . '_settings', []);
     }
@@ -74,8 +77,8 @@ final class Indobe_Blocks_Support extends AbstractPaymentMethodType
      */
     public function get_payment_method_script_handles()
     {
-        $script_url = plugins_url('blocks/js/frontend.js', dirname(__FILE__));
-        $script_asset_path = dirname(__FILE__) . '/js/frontend.asset.php';
+        $script_url = plugins_url('blocks/js/frontend.js', __DIR__);
+        $script_asset_path = __DIR__ . '/js/frontend.asset.php';
 
         $script_asset = require $script_asset_path;
 
@@ -85,7 +88,7 @@ final class Indobe_Blocks_Support extends AbstractPaymentMethodType
                 $script_url,
                 $script_asset['dependencies'],
                 $script_asset['version'],
-                true
+                true,
             );
         }
 
@@ -106,11 +109,11 @@ final class Indobe_Blocks_Support extends AbstractPaymentMethodType
         $show_icon = $this->gateway->get_option('enable_icon', 'yes') === 'yes';
 
         return [
-            'name'        => $this->name,
-            'title'       => $this->gateway->get_title(),
+            'name' => $this->name,
+            'title' => $this->gateway->get_title(),
             'description' => wp_kses_post($this->gateway->get_description()),
-            'icon'        => $show_icon ? ($this->gateway->icon ?? '') : '',
-            'supports'    => $this->get_supported_features(),
+            'icon' => $show_icon ? ($this->gateway->icon ?? '') : '',
+            'supports' => $this->get_supported_features(),
         ];
     }
 
